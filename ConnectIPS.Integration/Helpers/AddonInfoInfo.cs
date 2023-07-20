@@ -31,6 +31,7 @@ namespace ConnectIPS.Integration.Helpers
                 string[] FindColumn = new string[0];
                 string[] FormColumn = new string[0];
 
+               
             }
             catch
             {
@@ -89,6 +90,14 @@ namespace ConnectIPS.Integration.Helpers
                 string[] ChildTable = new string[0];
                 string[] FindColumn = new string[0];
                 string[] FormColumn = new string[0];
+                string[,] srt = new string[,] { { "N", "No" }, { "Y", "Yes" } };
+
+                B1Helper.AddField("CONNIPS", "NCHL-NPI (Bank Integration)", "OVPM", BoFieldTypes.db_Alpha, 1, BoYesNoEnum.tNO, BoFldSubTypes.st_None, false, "");
+                B1Helper.AddField("TRANTYPE", "ConnectIPS Transaction Type", "OVPM", BoFieldTypes.db_Alpha, 15, BoYesNoEnum.tNO, BoFldSubTypes.st_None, false, "");
+                B1Helper.AddField("CATEGORY", "Category Purpose", "OVPM", BoFieldTypes.db_Alpha, 20, BoYesNoEnum.tNO, BoFldSubTypes.st_None, false, "");
+                B1Helper.AddField("VALIDATED", "Verified Account", "OVPM", BoFieldTypes.db_Alpha, 1, BoYesNoEnum.tNO, BoFldSubTypes.st_None, false, "");
+                B1Helper.AddField("PAYSTATUS", "ConnectIps Payment Status", "OVPM", BoFieldTypes.db_Alpha, 1, BoYesNoEnum.tNO, BoFldSubTypes.st_None, false, "");
+                B1Helper.AddField("CIBATCH", "ConnectIps Batch", "OVPM", BoFieldTypes.db_Alpha, 254, BoYesNoEnum.tNO, BoFldSubTypes.st_None, false, "");
 
                 return UDOAdded;
             }

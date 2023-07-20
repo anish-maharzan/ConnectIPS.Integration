@@ -44,7 +44,8 @@ namespace ConnectIPS.Integration
                 }
                 //AddonInfoInfo.GetCommonSettings();
                 var applicationHandler = new ApplicationHandlers();
-                Application.SBO_Application.StatusBar.SetSystemMessage("Add-on installed successfully.", SAPbouiCOM.BoMessageTime.bmt_Short, SAPbouiCOM.BoStatusBarMessageType.smt_Success);
+                var addonName = "ConnectIPS Integration";
+                Application.SBO_Application.StatusBar.SetSystemMessage($"{addonName} Add-on installed successfully.", SAPbouiCOM.BoMessageTime.bmt_Short, SAPbouiCOM.BoStatusBarMessageType.smt_Success);
                 oApp.Run();
             }
             catch (Exception ex)

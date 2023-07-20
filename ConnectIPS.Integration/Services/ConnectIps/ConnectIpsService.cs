@@ -1,5 +1,7 @@
 ﻿using ConnectIPS.Integration.Helpers;
 using ConnectIPS.Integration.Models.ConnectIps;
+using ConnectIPS.Integration.Models.ConnectIps.Account;
+using ConnectIPS.Integration.Models.ConnectIps.Response;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -156,10 +158,21 @@ namespace ConnectIPS.Integration.Services.ConnectIps
             return refreshToken.access_token;
         }
 
+        public async Task<ValidateBankAccountResponse> ValidateAccount(ValidateBankAccount bankAccount)
+        {
+            string refreshToken = await GetRefreshTokenAsync();
+
+            string url = "http://demo.connectips.com:6065/api/validatebankaccount";
+            string requestBody = JsonConvert.SerializeObject(bankAccount);
+            httpHelper.AddBearerToken(refreshToken);
+            var response = await httpHelper.Post<ValidateBankAccountResponse>(url, requestBody);
+            return response;
+        }
+
         public async Task<CipsBatchResponseModel> RealTimeFundTransferAsync(RealTimeTransaction request)
         {
             string refreshToken = await GetRefreshTokenAsync();
-            request.token = GetConnectIpsToken(request); ;
+            request.token = GetConnectIpsToken(request);
 
             string url = "http://demo.connectips.com:6065/api/postcipsbatch";
             string requestBody = JsonConvert.SerializeObject(request);

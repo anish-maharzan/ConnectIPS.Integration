@@ -1,6 +1,6 @@
 ﻿namespace ConnectIPS.Integration.Models.ConnectIps
 {
-    class BankDetail
+    class BankAccountDetail
     {
         public string AccountName { get; set; }
         public string AccountNo { get; set; }

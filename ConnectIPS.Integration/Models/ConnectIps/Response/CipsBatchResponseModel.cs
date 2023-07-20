@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace ConnectIPS.Integration.Models.ConnectIps
+namespace ConnectIPS.Integration.Models.ConnectIps.Response
 {
     class CipsBatchResponseModel
     {

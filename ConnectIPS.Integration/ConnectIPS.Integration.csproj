@@ -86,8 +86,11 @@
     <Reference Include="SAPBusinessOneSDK" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Forms\Outgoing Payments.b1f.cs">
+    <Compile Include="Forms\Outgoing\Outgoing Payments.b1f.cs">
       <DependentUpon>Outgoing Payments.b1f</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\Outgoing\TransactionConfimation.b1f.cs">
+      <DependentUpon>TransactionConfimation.b1f</DependentUpon>
     </Compile>
     <Compile Include="Helpers\AppConfig.cs" />
     <Compile Include="Helpers\GlobalMethods_Variables.cs">
@@ -104,11 +107,15 @@
     <Compile Include="Log\Logger.cs" />
     <Compile Include="Log\LogHelper.cs" />
     <Compile Include="Log\Matrix.cs" />
+    <Compile Include="Models\ConnectIps\Account\ValidateBankAccount.cs" />
+    <Compile Include="Models\ConnectIps\Account\ValidateBankAccountResponse.cs" />
     <Compile Include="Models\ConnectIps\BasicAuthentication.cs" />
-    <Compile Include="Models\ConnectIps\CipsBatchResponseModel.cs" />
+    <Compile Include="Models\ConnectIps\NonRealTimeTransaction.cs" />
+    <Compile Include="Models\ConnectIps\Response\CipsBatchResponseModel.cs" />
     <Compile Include="Models\ConnectIps\RealTimeTransaction.cs" />
-    <Compile Include="Models\ConnectIps\TokenResponse.cs" />
-    <Compile Include="Models\ConnectIps\BankDetail.cs" />
+    <Compile Include="Models\ConnectIps\Response\ReponseCode.cs" />
+    <Compile Include="Models\ConnectIps\Response\TokenResponse.cs" />
+    <Compile Include="Models\ConnectIps\BankAccountDetail.cs" />
     <Compile Include="Models\ConnectIps\UserAuthentication.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -121,11 +128,15 @@
     <EmbeddedResource Include="Files\NPI.pfx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
-    <None Include="Forms\Outgoing Payments.b1f">
+    <None Include="Forms\Outgoing\Outgoing Payments.b1f">
       <FormCategory>SystemForm</FormCategory>
+      <SubType>Designer</SubType>
     </None>
-    <None Include="Forms\Outgoing Payments.b1f__orig_srf">
+    <None Include="Forms\Outgoing\Outgoing Payments.b1f__orig_srf">
       <DependentUpon>Outgoing Payments.b1f</DependentUpon>
+    </None>
+    <None Include="Forms\Outgoing\TransactionConfimation.b1f">
+      <FormCategory>UserForm</FormCategory>
     </None>
     <None Include="packages.config">
       <SubType>Designer</SubType>
