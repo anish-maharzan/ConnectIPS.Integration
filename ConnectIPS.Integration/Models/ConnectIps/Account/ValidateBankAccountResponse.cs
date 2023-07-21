@@ -9,7 +9,7 @@
         public string currency { get; set; }
         public string responseCode { get; set; }
         public string responseMessage { get; set; }
-        public int matchPercentage { get; set; }
+        public int matchPercentate { get; set; }
         public string baseUrl { get; set; }
         public string userName { get; set; }
         public string password { get; set; }

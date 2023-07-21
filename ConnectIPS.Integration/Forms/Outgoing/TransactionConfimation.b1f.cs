@@ -80,7 +80,8 @@ namespace ConnectIPS.Integration.Forms.Outgoing
 
         private void OnCustomInitialize()
         {
-
+            //fldSender.Select();
+            //fldBeneficiary.Select();
         }
 
         private SAPbouiCOM.EditText tSendBank;

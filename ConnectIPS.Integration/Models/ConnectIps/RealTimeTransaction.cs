@@ -24,12 +24,12 @@ namespace ConnectIPS.Integration.Models.ConnectIps
         {
             batchCount = "1";
             batchCrncy = "NPR";
-            debtorIdType = "";
-            debtorIdValue = "";
-            debtorAddress = "";
-            debtorPhone = "";
-            debtorMobile = "";
-            debtorEmail = "";
+            //debtorIdType = "";
+            //debtorIdValue = "";
+            //debtorAddress = "";
+            //debtorPhone = "";
+            //debtorMobile = "";
+            //debtorEmail = "";
         }
     }
 
@@ -55,16 +55,16 @@ namespace ConnectIPS.Integration.Models.ConnectIps
 
         public CIpsTransactionDetail()
         {
-            creditorIdType = "";
-            creditorIdValue = "";
-            creditorAddress = "";
-            creditorPhone = "";
-            creditorMobile = "";
-            creditorEmail = "";
-            addenda1 = "";
-            addenda2 = "";
-            addenda3 = "";
-            addenda4 = "";
+            //creditorIdType = "";
+            //creditorIdValue = "";
+            //creditorAddress = "";
+            //creditorPhone = "";
+            //creditorMobile = "";
+            //creditorEmail = "";
+            //addenda1 = "";
+            //addenda2 = "";
+            //addenda3 = "";
+            //addenda4 = "";
         }
     }
 

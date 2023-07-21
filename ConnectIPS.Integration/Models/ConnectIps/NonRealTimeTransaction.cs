@@ -5,7 +5,7 @@ namespace ConnectIPS.Integration.Models.ConnectIps
     public class NchlIpsBatchDetail
     {
         public string batchId { get; set; }
-        public int batchAmount { get; set; }
+        public double batchAmount { get; set; }
         public int batchCount { get; set; }
         public string batchCrncy { get; set; }
         public string categoryPurpose { get; set; }
@@ -19,13 +19,18 @@ namespace ConnectIPS.Integration.Models.ConnectIps
         public string debtorPhone { get; set; }
         public string debtorMobile { get; set; }
         public string debtorEmail { get; set; }
+        public NchlIpsBatchDetail()
+        {
+            batchCount = 1;
+            batchCrncy = "NPR";
+        }
     }
 
     public class NchlIpsTransactionDetail
     {
         public string instructionId { get; set; }
         public string endToEndId { get; set; }
-        public int amount { get; set; }
+        public double amount { get; set; }
         public string creditorAgent { get; set; }
         public string creditorBranch { get; set; }
         public string creditorName { get; set; }
@@ -35,8 +40,10 @@ namespace ConnectIPS.Integration.Models.ConnectIps
         public string creditorPhone { get; set; }
         public string creditorMobile { get; set; }
         public string creditorEmail { get; set; }
-        public string addenda1 { get; set; }
-        public int addenda2 { get; set; }
+        public int addenda1 { get; set; }
+        public string addenda2 { get; set; }
+        public string addenda3 { get; set; }
+        public string addenda4 { get; set; }
     }
 
     public class NonRealTimeTransaction

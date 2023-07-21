@@ -49,6 +49,12 @@ namespace ConnectIPS.Integration.Services.ConnectIps
             return batchString;
         }
 
+        private string GetBatchString(string BatchId, string DebtorAgent, string DebtorBranch, string DebtorAccount, string BatchAmount, string BatchCurrency, string categoryPurpose)
+        {
+            var batchString = $"{BatchId},{DebtorAgent},{DebtorBranch},{DebtorAccount},{BatchAmount},{BatchCurrency},{categoryPurpose}";
+            return batchString;
+        }
+
         private string GetTransactionString(string InstructionId, string CreditorAgent, string CreditorBranch, string CreditorAccount, string TransactionAmount)
         {
             var transactionString = $"{InstructionId},{CreditorAgent},{CreditorBranch},{CreditorAccount},{TransactionAmount}";
@@ -101,6 +107,20 @@ namespace ConnectIPS.Integration.Services.ConnectIps
 
             var transDetail = request.cipsTransactionDetailList.First();
             var transactionString = GetTransactionString(transDetail.instructionId, transDetail.creditorAgent, transDetail.creditorBranch, transDetail.creditorAccount, transDetail.amount);
+
+            var tokenString = GetTokenString(batchString, transactionString, userAuth.username);
+
+            var token = GenerateConnectIPSToken(tokenString);
+            return token;
+        }
+
+        private string GetConnectIpsToken(NonRealTimeTransaction request)
+        {
+            var batchDetail = request.nchlIpsBatchDetail;
+            var batchString = GetBatchString(batchDetail.batchId, batchDetail.debtorAgent, batchDetail.debtorBranch, batchDetail.debtorAccount, batchDetail.batchAmount.ToString(), batchDetail.batchCrncy, batchDetail.categoryPurpose);
+
+            var transDetail = request.nchlIpsTransactionDetailList.First();
+            var transactionString = GetTransactionString(transDetail.instructionId, transDetail.creditorAgent, transDetail.creditorBranch, transDetail.creditorAccount, transDetail.amount.ToString());
 
             var tokenString = GetTokenString(batchString, transactionString, userAuth.username);
 
@@ -175,6 +195,18 @@ namespace ConnectIPS.Integration.Services.ConnectIps
             request.token = GetConnectIpsToken(request);
 
             string url = "http://demo.connectips.com:6065/api/postcipsbatch";
+            string requestBody = JsonConvert.SerializeObject(request);
+            httpHelper.AddBearerToken(refreshToken);
+            var response = await httpHelper.Post<CipsBatchResponseModel>(url, requestBody);
+            return response;
+        }
+
+        public async Task<CipsBatchResponseModel> NonRealTimeFundTransferAsync(NonRealTimeTransaction request)
+        {
+            string refreshToken = await GetRefreshTokenAsync();
+            request.token = GetConnectIpsToken(request);
+
+            string url = "http://demo.connectips.com:6065/api/postnchlipsbatch";
             string requestBody = JsonConvert.SerializeObject(request);
             httpHelper.AddBearerToken(refreshToken);
             var response = await httpHelper.Post<CipsBatchResponseModel>(url, requestBody);
