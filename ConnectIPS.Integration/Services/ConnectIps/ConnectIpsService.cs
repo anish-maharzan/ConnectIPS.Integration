@@ -128,7 +128,7 @@ namespace ConnectIPS.Integration.Services.ConnectIps
             return token;
         }
 
-        private async Task<TokenResponse> GetAccessTokenAsync()
+        private async Task<TokenResponse> GetRefreshTokenAsync()
         {
             string postUrl = "http://demo.connectips.com:6065/oauth/token";
 
@@ -147,7 +147,7 @@ namespace ConnectIPS.Integration.Services.ConnectIps
             return response;
         }
 
-        private async Task<TokenResponse> GetRefreshTokenAsync(string refreshToken)
+        private async Task<TokenResponse> GetAccessTokenAsync(string refreshToken)
         {
             string postUrl = "http://demo.connectips.com:9095/oauth/token";
 
@@ -171,44 +171,44 @@ namespace ConnectIPS.Integration.Services.ConnectIps
             return response;
         }
 
-        private async Task<string> GetRefreshTokenAsync()
+        private async Task<string> GetAccessTokenAsync()
         {
-            var accessToken = await GetAccessTokenAsync();
-            var refreshToken = await GetRefreshTokenAsync(accessToken.refresh_token);
-            return refreshToken.access_token;
+            var refreshToken = await GetRefreshTokenAsync();
+            var accessToken = await GetAccessTokenAsync(refreshToken.refresh_token);
+            return accessToken.access_token;
         }
 
         public async Task<ValidateBankAccountResponse> ValidateAccount(ValidateBankAccount bankAccount)
         {
-            string refreshToken = await GetRefreshTokenAsync();
+            string accessToken = await GetAccessTokenAsync();
 
             string url = "http://demo.connectips.com:6065/api/validatebankaccount";
             string requestBody = JsonConvert.SerializeObject(bankAccount);
-            httpHelper.AddBearerToken(refreshToken);
+            httpHelper.AddBearerToken(accessToken);
             var response = await httpHelper.Post<ValidateBankAccountResponse>(url, requestBody);
             return response;
         }
 
         public async Task<CipsBatchResponseModel> RealTimeFundTransferAsync(RealTimeTransaction request)
         {
-            string refreshToken = await GetRefreshTokenAsync();
+            string accessToken = await GetAccessTokenAsync();
             request.token = GetConnectIpsToken(request);
 
             string url = "http://demo.connectips.com:6065/api/postcipsbatch";
             string requestBody = JsonConvert.SerializeObject(request);
-            httpHelper.AddBearerToken(refreshToken);
+            httpHelper.AddBearerToken(accessToken);
             var response = await httpHelper.Post<CipsBatchResponseModel>(url, requestBody);
             return response;
         }
 
         public async Task<CipsBatchResponseModel> NonRealTimeFundTransferAsync(NonRealTimeTransaction request)
         {
-            string refreshToken = await GetRefreshTokenAsync();
+            string accessToken = await GetAccessTokenAsync();
             request.token = GetConnectIpsToken(request);
 
             string url = "http://demo.connectips.com:6065/api/postnchlipsbatch";
             string requestBody = JsonConvert.SerializeObject(request);
-            httpHelper.AddBearerToken(refreshToken);
+            httpHelper.AddBearerToken(accessToken);
             var response = await httpHelper.Post<CipsBatchResponseModel>(url, requestBody);
             return response;
         }
