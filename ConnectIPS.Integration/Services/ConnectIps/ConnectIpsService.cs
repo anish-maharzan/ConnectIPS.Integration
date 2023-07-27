@@ -17,29 +17,21 @@ namespace ConnectIPS.Integration.Services.ConnectIps
 {
     class ConnectIpsService
     {
-        private readonly BasicAuthentication basicAuth;
-        private readonly UserAuthentication userAuth;
-        private readonly string baseUrl;
+        private readonly BasicAuthentication TBasicAuth;
+        private readonly UserAuthentication TUserAuth;
+        private readonly BasicAuthentication QrBasicAuth;
+        private readonly UserAuthentication QrUserAuth;
         private readonly string Filename;
         private readonly HttpHelper httpHelper;
 
         public ConnectIpsService()
         {
-            basicAuth = new BasicAuthentication()
-            {
-                Username = "neosoft",
-                Password = "Abcd@123"
-            };
+            TBasicAuth = Credential.TBasicAuth;
+            TUserAuth = Credential.TUserAuth;
+            QrUserAuth = Credential.QRUserAuth;
+            QrBasicAuth = Credential.QRBasicAuth;
 
-            userAuth = new UserAuthentication()
-            {
-                username = "NEOSOFT@999",
-                password = "123Abcd@123",
-                grant_type = "password"
-            };
-
-            baseUrl = "http://demo.connectips.com:6065";
-            Filename = Application.StartupPath+ "\\Files\\NPI.pfx";
+            Filename = Application.StartupPath + "\\Files\\NPI.pfx";
             httpHelper = new HttpHelper();
         }
 
@@ -65,6 +57,13 @@ namespace ConnectIPS.Integration.Services.ConnectIps
         {
             var tokenString = $"{BatchString},{TransactionString},{userId}";
             return tokenString;
+        }
+
+        private string GetTokenString(QRGeneration request)
+        {
+            string token = request.acquirerId + "," + request.merchantId + "," + request.merchantCategoryCode + "," + request.transactionCurrency + "," +
+   request.transactionAmount + "," + request.billNumber + "," + QrUserAuth.username;
+            return token;
         }
 
         private string GenerateConnectIPSToken(string stringToHash, string pfxPassword = "123")
@@ -108,7 +107,7 @@ namespace ConnectIPS.Integration.Services.ConnectIps
             var transDetail = request.cipsTransactionDetailList.First();
             var transactionString = GetTransactionString(transDetail.instructionId, transDetail.creditorAgent, transDetail.creditorBranch, transDetail.creditorAccount, transDetail.amount);
 
-            var tokenString = GetTokenString(batchString, transactionString, userAuth.username);
+            var tokenString = GetTokenString(batchString, transactionString, TUserAuth.username);
 
             var token = GenerateConnectIPSToken(tokenString);
             return token;
@@ -122,7 +121,15 @@ namespace ConnectIPS.Integration.Services.ConnectIps
             var transDetail = request.nchlIpsTransactionDetailList.First();
             var transactionString = GetTransactionString(transDetail.instructionId, transDetail.creditorAgent, transDetail.creditorBranch, transDetail.creditorAccount, transDetail.amount.ToString());
 
-            var tokenString = GetTokenString(batchString, transactionString, userAuth.username);
+            var tokenString = GetTokenString(batchString, transactionString, TUserAuth.username);
+
+            var token = GenerateConnectIPSToken(tokenString);
+            return token;
+        }
+
+        private string GetConnectIpsToken(QRGeneration request)
+        {
+            string tokenString = GetTokenString(request);
 
             var token = GenerateConnectIPSToken(tokenString);
             return token;
@@ -134,15 +141,15 @@ namespace ConnectIPS.Integration.Services.ConnectIps
 
             var formData = new Dictionary<string, string>();
 
-            PropertyInfo[] properties = userAuth.GetType().GetProperties();
+            PropertyInfo[] properties = TUserAuth.GetType().GetProperties();
             foreach (PropertyInfo property in properties)
             {
                 string propertyName = property.Name;
-                string propertyValue = property.GetValue(userAuth).ToString();
+                string propertyValue = property.GetValue(TUserAuth).ToString();
                 formData.Add(propertyName, propertyValue);
             }
 
-            httpHelper.AddBasicAuthHeader(basicAuth.Username, basicAuth.Password);
+            httpHelper.AddBasicAuthHeader(TBasicAuth.Username, TBasicAuth.Password);
             var response = await httpHelper.PostFormData<TokenResponse>(postUrl, formData);
             return response;
         }
@@ -166,7 +173,7 @@ namespace ConnectIPS.Integration.Services.ConnectIps
                 formData.Add(propertyName, propertyValue);
             }
 
-            httpHelper.AddBasicAuthHeader(basicAuth.Username, basicAuth.Password);
+            httpHelper.AddBasicAuthHeader(TBasicAuth.Username, TBasicAuth.Password);
             var response = await httpHelper.PostFormData<TokenResponse>(postUrl, formData);
             return response;
         }
@@ -213,5 +220,48 @@ namespace ConnectIPS.Integration.Services.ConnectIps
             return response;
         }
 
+        public async Task<TokenResponse> GetQRTokenAsync()
+        {
+            string postUrl = "https://devopennpi.connectips.com/oauth/token";
+
+            var formData = new Dictionary<string, string>();
+
+            PropertyInfo[] properties = QrUserAuth.GetType().GetProperties();
+            foreach (PropertyInfo property in properties)
+            {
+                string propertyName = property.Name;
+                string propertyValue = property.GetValue(QrUserAuth).ToString();
+                formData.Add(propertyName, propertyValue);
+            }
+
+            httpHelper.AddBasicAuthHeader(QrBasicAuth.Username, QrBasicAuth.Password);
+            var response = await httpHelper.PostFormData<TokenResponse>(postUrl, formData);
+            return response;
+        }
+
+        public async Task<QRGenerationResponse> GenerateQRAsync(QRGeneration request)
+        {
+            var qrToken = await GetQRTokenAsync();
+            var accessToken = qrToken.access_token;
+            request.token = GetConnectIpsToken(request);
+
+            string url = "https://devopennpi.connectips.com/qr/generateQR";
+            string requestBody = JsonConvert.SerializeObject(request);
+            httpHelper.AddBearerToken(accessToken);
+            var response = await httpHelper.Post<QRGenerationResponse>(url, requestBody);
+            return response;
+        }
+
+        public async Task<PaymentVerificationResponse> VerifyPayment(PaymentVerification request)
+        {
+            var qrToken = await GetQRTokenAsync();
+            var accessToken = qrToken.access_token;
+
+            string url = "https://devopennpi.connectips.com/nQR/v1/merchanttxnreport";
+            string requestBody = JsonConvert.SerializeObject(request);
+            httpHelper.AddBearerToken(accessToken);
+            var response = await httpHelper.Post<PaymentVerificationResponse>(url, requestBody);
+            return response;
+        }
     }
 }
