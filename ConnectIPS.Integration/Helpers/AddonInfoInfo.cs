@@ -93,11 +93,14 @@ namespace ConnectIPS.Integration.Helpers
                 string[,] srt = new string[,] { { "N", "No" }, { "Y", "Yes" } };
 
                 B1Helper.AddField("CONNIPS", "NCHL-NPI (Bank Integration)", "OVPM", BoFieldTypes.db_Alpha, 1, BoYesNoEnum.tNO, BoFldSubTypes.st_None, false, "");
-                B1Helper.AddField("TRANTYPE", "ConnectIPS Transaction Type", "OVPM", BoFieldTypes.db_Alpha, 15, BoYesNoEnum.tNO, BoFldSubTypes.st_None, false, "");
+                B1Helper.AddField("TRANTYPE", "Connect IPS Transaction Type", "OVPM", BoFieldTypes.db_Alpha, 15, BoYesNoEnum.tNO, BoFldSubTypes.st_None, false, "");
                 B1Helper.AddField("CATEGORY", "Category Purpose", "OVPM", BoFieldTypes.db_Alpha, 20, BoYesNoEnum.tNO, BoFldSubTypes.st_None, false, "");
                 B1Helper.AddField("VALIDATED", "Verified Account", "OVPM", BoFieldTypes.db_Alpha, 1, BoYesNoEnum.tNO, BoFldSubTypes.st_None, false, "");
-                B1Helper.AddField("PAYSTATUS", "ConnectIps Payment Status", "OVPM", BoFieldTypes.db_Alpha, 1, BoYesNoEnum.tNO, BoFldSubTypes.st_None, false, "");
-                B1Helper.AddField("CIBATCH", "ConnectIps Batch", "OVPM", BoFieldTypes.db_Alpha, 254, BoYesNoEnum.tNO, BoFldSubTypes.st_None, false, "");
+                B1Helper.AddField("PAYSTATUS", "Connect IPS Payment Status", "OVPM", BoFieldTypes.db_Alpha, 1, BoYesNoEnum.tNO, BoFldSubTypes.st_None, false, "");
+                B1Helper.AddField("CIBATCH", "Connect IPS Batch", "OVPM", BoFieldTypes.db_Alpha, 254, BoYesNoEnum.tNO, BoFldSubTypes.st_None, false, "");
+
+                B1Helper.AddField("PAYSTATUS", "Connect IPS", "OINV", BoFieldTypes.db_Alpha, 1, BoYesNoEnum.tNO, BoFldSubTypes.st_None, false, "");
+                B1Helper.AddField("TRACEID", "Validation TraceId", "OINV", BoFieldTypes.db_Alpha, 20, BoYesNoEnum.tNO, BoFldSubTypes.st_None, false, "");
 
                 return UDOAdded;
             }
