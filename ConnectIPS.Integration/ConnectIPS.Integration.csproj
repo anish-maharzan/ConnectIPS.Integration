@@ -133,12 +133,12 @@
     <Compile Include="Models\ConnectIps\Response\TokenResponse.cs" />
     <Compile Include="Models\ConnectIps\BankAccountDetail.cs" />
     <Compile Include="Models\ConnectIps\UserAuthentication.cs" />
-    <Compile Include="Models\IncomingPayment.cs" />
+    <Compile Include="Models\ConnectIps\Interface\IResponse.cs" />
+    <Compile Include="Models\SAP\IncomingPayment.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\ConnectIps\ConnectIpsService.cs" />
-    <Compile Include="Services\IncomingPaymentService.cs" />
-    <Compile Include="Services\QRCodeService.cs" />
+    <Compile Include="Services\SAP\IncomingPaymentService.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config">

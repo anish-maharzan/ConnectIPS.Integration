@@ -62,6 +62,23 @@ namespace ConnectIPS.Integration.Helpers
             }
         }
 
+        public async Task<string> Post(string url, string requestBody)
+        {
+            try
+            {
+                HttpContent content = new StringContent(requestBody, System.Text.Encoding.UTF8, "application/json");
+                HttpResponseMessage responseMsg = await _httpClient.PostAsync(url, content);
+                responseMsg.EnsureSuccessStatusCode();
+                string response = await responseMsg.Content.ReadAsStringAsync();
+                return response;
+            }
+            catch (HttpRequestException ex)
+            {
+                var error = $"Error occurred while making POST request: {ex.Message}";
+                throw new Exception(error);
+            }
+        }
+
         public async Task<T> PostFormData<T>(string url, Dictionary<string, string> formData)
         {
             try

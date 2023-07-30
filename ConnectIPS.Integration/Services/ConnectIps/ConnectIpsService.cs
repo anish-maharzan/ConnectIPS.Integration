@@ -1,6 +1,7 @@
 ﻿using ConnectIPS.Integration.Helpers;
 using ConnectIPS.Integration.Models.ConnectIps;
 using ConnectIPS.Integration.Models.ConnectIps.Account;
+using ConnectIPS.Integration.Models.ConnectIps.Interface;
 using ConnectIPS.Integration.Models.ConnectIps.Response;
 using Newtonsoft.Json;
 using System;
@@ -252,7 +253,7 @@ namespace ConnectIPS.Integration.Services.ConnectIps
             return response;
         }
 
-        public async Task<PaymentVerificationResponse> VerifyPayment(PaymentVerification request)
+        public async Task<IResponse> VerifyPayment(PaymentVerification request)
         {
             var qrToken = await GetQRTokenAsync();
             var accessToken = qrToken.access_token;
@@ -260,8 +261,18 @@ namespace ConnectIPS.Integration.Services.ConnectIps
             string url = "https://devopennpi.connectips.com/nQR/v1/merchanttxnreport";
             string requestBody = JsonConvert.SerializeObject(request);
             httpHelper.AddBearerToken(accessToken);
-            var response = await httpHelper.Post<PaymentVerificationResponse>(url, requestBody);
-            return response;
+            var responseString = await httpHelper.Post(url, requestBody);
+            var response = JsonConvert.DeserializeObject<PaymentVerificationErrorResponse>(responseString);
+            if (response.responseCode == "200")
+            {
+                var result = JsonConvert.DeserializeObject<PaymentVerificationSuccessResponse>(responseString);
+                return result;
+            }
+            else
+            {
+                var result = JsonConvert.DeserializeObject<PaymentVerificationErrorResponse>(responseString);
+                return result;
+            }
         }
     }
 }

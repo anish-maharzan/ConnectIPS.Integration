@@ -1,4 +1,5 @@
 ﻿using ConnectIPS.Integration.Models.ConnectIps;
+using ConnectIPS.Integration.Models.ConnectIps.Interface;
 using ConnectIPS.Integration.Models.ConnectIps.Response;
 using ConnectIPS.Integration.Services.ConnectIps;
 using QRCoder;
@@ -12,17 +13,21 @@ namespace ConnectIPS.Integration.Forms.Incoming
     [FormAttribute("ConnectIPS.Integration.Forms.Incoming.QRCode", "Forms/Incoming/QRCodeScan.b1f")]
     class QRCodeScan : UserFormBase
     {
-        private SAPbouiCOM.Button bScan;
+        private SAPbouiCOM.Button bCheck;
         private SAPbouiCOM.PictureBox pbQrCode;
         private readonly string _validationTraceId;
         private readonly string _qrString;
+        private int _type;
+        private int _count;
 
         public QRCodeScan()
         {
         }
 
-        public QRCodeScan(string qrString, string validationTraceId)
+        public QRCodeScan(string qrString, string validationTraceId, int type, int count)
         {
+            _type = type;
+            _count = count;
             _qrString = qrString;
             _validationTraceId = validationTraceId;
             DisplayQRCode();
@@ -34,8 +39,8 @@ namespace ConnectIPS.Integration.Forms.Incoming
         public override void OnInitializeComponent()
         {
             this.pbQrCode = ((SAPbouiCOM.PictureBox)(this.GetItem("pQr").Specific));
-            this.bScan = ((SAPbouiCOM.Button)(this.GetItem("bScan").Specific));
-            this.bScan.ClickAfter += new SAPbouiCOM._IButtonEvents_ClickAfterEventHandler(this.bScan_ClickAfter);
+            this.bCheck = ((SAPbouiCOM.Button)(this.GetItem("bChk").Specific));
+            this.bCheck.ClickAfter += new SAPbouiCOM._IButtonEvents_ClickAfterEventHandler(this.bCheck_ClickAfter);
             this.OnCustomInitialize();
 
         }
@@ -62,36 +67,39 @@ namespace ConnectIPS.Integration.Forms.Incoming
                 Directory.CreateDirectory(qrCodePath);
 
             qrCodeImage.Save("QRCode\\" + qrCodeImgName, System.Drawing.Imaging.ImageFormat.Png);
-            pbQrCode.Picture = Path.Combine( qrCodePath , qrCodeImgName);
+            pbQrCode.Picture = Path.Combine(qrCodePath, qrCodeImgName);
         }
 
         private void OnCustomInitialize()
         {
-
         }
 
-        private void bScan_ClickAfter(object sboObject, SAPbouiCOM.SBOItemEventArg pVal)
+        private void bCheck_ClickAfter(object sboObject, SAPbouiCOM.SBOItemEventArg pVal)
         {
             try
             {
                 var response = PaymentVerify().GetAwaiter().GetResult();
-                if (response.responseCode == "000")
+                if (response.responseCode == "200")
                 {
-                    Program.SBO_Application.MessageBox(response.responseMessage);
+                    var respnse = (PaymentVerificationSuccessResponse)response;
+                    Program.SBO_Application.MessageBox(respnse.responseStatus);
+                    var form = (SAPbouiCOM.Form)Application.SBO_Application.Forms.GetFormByTypeAndCount(_type, _count);
+                    var paymentButton = (SAPbouiCOM.Button)form.Items.Item("bPaymt").Specific;
+                    paymentButton.Item.Click();
                 }
                 else
                 {
-                    Program.SBO_Application.MessageBox("Not Recieved yet.");
+                    var respnse = (PaymentVerificationErrorResponse)response;
+                    Program.SBO_Application.MessageBox(respnse.responseDescription);
                 }
-                Program.SBO_Application.MessageBox(response.responseMessage);
             }
             catch (System.Exception ex)
             {
-                Program.SBO_Application.MessageBox(ex.Message);
+                Program.SBO_Application.MessageBox($"Exception occurs: {ex.Message}");
             }
         }
 
-        private async Task<PaymentVerificationResponse> PaymentVerify()
+        private async Task<IResponse> PaymentVerify()
         {
             var paymentVerification = new PaymentVerification()
             {

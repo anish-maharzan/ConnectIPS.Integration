@@ -116,8 +116,8 @@ namespace ConnectIPS.Integration.Forms.Outgoing
         private void btnPay_ClickAfter(object sboObject, SAPbouiCOM.SBOItemEventArg pVal)
         {
             var form = (SAPbouiCOM.Form)Application.SBO_Application.Forms.GetFormByTypeAndCount(_type, _count);
-            var addButton = (SAPbouiCOM.Button)form.Items.Item("bProc").Specific;
-            addButton.Item.Click();
+            var processButton = (SAPbouiCOM.Button)form.Items.Item("bProc").Specific;
+            processButton.Item.Click();
             btnCancel.Item.Click();
         }
 
