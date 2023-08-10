@@ -2,8 +2,10 @@
 using ConnectIPS.Integration.Models.ConnectIps.Interface;
 using ConnectIPS.Integration.Models.ConnectIps.Response;
 using ConnectIPS.Integration.Services.ConnectIps;
+using MainLibrary.SAPB1;
 using QRCoder;
 using SAPbouiCOM.Framework;
+using System;
 using System.Drawing;
 using System.IO;
 using System.Threading.Tasks;
@@ -13,23 +15,33 @@ namespace ConnectIPS.Integration.Forms.Incoming
     [FormAttribute("ConnectIPS.Integration.Forms.Incoming.QRCode", "Forms/Incoming/QRCodeScan.b1f")]
     class QRCodeScan : UserFormBase
     {
-        private SAPbouiCOM.Button bCheck;
-        private SAPbouiCOM.PictureBox pbQrCode;
         private readonly string _validationTraceId;
         private readonly string _qrString;
-        private int _type;
-        private int _count;
+        private readonly int _type;
+        private readonly int _count;
+
+        private SAPbouiCOM.Button bCheck;
+        private SAPbouiCOM.PictureBox pbQrCode;
 
         public QRCodeScan()
         {
+        }
+
+        public QRCodeScan(string validationTraceId, int type, int count)
+        {
+            _type = type;
+            _count = count;
+            _validationTraceId = validationTraceId;
+            DisplayQRCode();
+
         }
 
         public QRCodeScan(string qrString, string validationTraceId, int type, int count)
         {
             _type = type;
             _count = count;
-            _qrString = qrString;
             _validationTraceId = validationTraceId;
+            _qrString = qrString;
             DisplayQRCode();
         }
 
@@ -41,6 +53,8 @@ namespace ConnectIPS.Integration.Forms.Incoming
             this.pbQrCode = ((SAPbouiCOM.PictureBox)(this.GetItem("pQr").Specific));
             this.bCheck = ((SAPbouiCOM.Button)(this.GetItem("bChk").Specific));
             this.bCheck.ClickAfter += new SAPbouiCOM._IButtonEvents_ClickAfterEventHandler(this.bCheck_ClickAfter);
+            this.Button0 = ((SAPbouiCOM.Button)(this.GetItem("2").Specific));
+            this.ChPaid = ((SAPbouiCOM.CheckBox)(this.GetItem("ChPaid").Specific));
             this.OnCustomInitialize();
 
         }
@@ -52,27 +66,43 @@ namespace ConnectIPS.Integration.Forms.Incoming
         {
         }
 
+        private void OnCustomInitialize()
+        {
+            UIAPIRawForm.Left = (Program.SBO_Application.Desktop.Width - UIAPIRawForm.Width)/2;
+            UIAPIRawForm.Top = Convert.ToInt32( (Program.SBO_Application.Desktop.Height - UIAPIRawForm.Height)/2.5);
+        }
+
         private void DisplayQRCode()
         {
+            string qrCodePath = GetQrCodeImg();
+            pbQrCode.Picture = qrCodePath;
+        }
+
+        private string GetQrCodeImg()
+        {
+            var folder = Path.Combine(System.Windows.Forms.Application.StartupPath, "QRCode");
+            if (!Directory.Exists(folder))
+                Directory.CreateDirectory(folder);
+
+            var imgName = _validationTraceId + ".png";
+
+            var fullPath = Path.Combine(folder, imgName);
+
+            if (File.Exists(fullPath))
+                return fullPath;
+
             QRCodeGenerator qrGenerator = new QRCodeGenerator();
             QRCodeData qrCodeData = qrGenerator.CreateQrCode(_qrString, QRCodeGenerator.ECCLevel.Q);
 
             QRCode qrCode = new QRCode(qrCodeData);
             Bitmap qrCodeImage = qrCode.GetGraphic(10); // 10 is the size (pixels) of each QR code module (cell)
 
-            var qrCodeImgName = _validationTraceId + "_QrCodeImage.png";
+            qrCodeImage.Save(fullPath, System.Drawing.Imaging.ImageFormat.Png);
 
-            var qrCodePath = System.Windows.Forms.Application.StartupPath + "\\QRCode";
-            if (!Directory.Exists(qrCodePath))
-                Directory.CreateDirectory(qrCodePath);
-
-            qrCodeImage.Save("QRCode\\" + qrCodeImgName, System.Drawing.Imaging.ImageFormat.Png);
-            pbQrCode.Picture = Path.Combine(qrCodePath, qrCodeImgName);
+            return fullPath;
         }
 
-        private void OnCustomInitialize()
-        {
-        }
+
 
         private void bCheck_ClickAfter(object sboObject, SAPbouiCOM.SBOItemEventArg pVal)
         {
@@ -81,11 +111,13 @@ namespace ConnectIPS.Integration.Forms.Incoming
                 var response = PaymentVerify().GetAwaiter().GetResult();
                 if (response.responseCode == "200")
                 {
-                    var respnse = (PaymentVerificationSuccessResponse)response;
-                    Program.SBO_Application.MessageBox(respnse.responseStatus);
                     var form = (SAPbouiCOM.Form)Application.SBO_Application.Forms.GetFormByTypeAndCount(_type, _count);
                     var paymentButton = (SAPbouiCOM.Button)form.Items.Item("bPaymt").Specific;
                     paymentButton.Item.Click();
+                    var respnse = (PaymentVerificationSuccessResponse)response;
+                    Program.SBO_Application.MessageBox(respnse.responseStatus);
+                    ChPaid.Checked = true;
+                    Button0.Item.Click();
                 }
                 else
                 {
@@ -111,5 +143,8 @@ namespace ConnectIPS.Integration.Forms.Incoming
             var response = await service.VerifyPayment(paymentVerification);
             return response;
         }
+
+        private SAPbouiCOM.Button Button0;
+        private SAPbouiCOM.CheckBox ChPaid;
     }
 }

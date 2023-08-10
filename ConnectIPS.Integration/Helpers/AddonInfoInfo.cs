@@ -101,6 +101,8 @@ namespace ConnectIPS.Integration.Helpers
 
                 B1Helper.AddField("PAYSTATUS", "Connect IPS", "OINV", BoFieldTypes.db_Alpha, 1, BoYesNoEnum.tNO, BoFldSubTypes.st_None, false, "");
                 B1Helper.AddField("TRACEID", "Validation TraceId", "OINV", BoFieldTypes.db_Alpha, 20, BoYesNoEnum.tNO, BoFldSubTypes.st_None, false, "");
+                B1Helper.AddField("ISQRPAY", "Is QR Payment?", "OINV", BoFieldTypes.db_Alpha, 1, BoYesNoEnum.tNO, BoFldSubTypes.st_None, false, "");
+                B1Helper.AddField("QRAMT", "QR Payment Amount", "OINV", BoFieldTypes.db_Float, 1, BoYesNoEnum.tNO, BoFldSubTypes.st_Price, false, "");
 
                 return UDOAdded;
             }

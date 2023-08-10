@@ -94,6 +94,9 @@
     <Compile Include="Forms\Incoming\A_R Invoice.b1f.cs">
       <DependentUpon>A_R Invoice.b1f</DependentUpon>
     </Compile>
+    <Compile Include="Forms\Incoming\QRAmountConfirmation.b1f.cs">
+      <DependentUpon>QRAmountConfirmation.b1f</DependentUpon>
+    </Compile>
     <Compile Include="Forms\Incoming\QRCodeScan.b1f.cs">
       <DependentUpon>QRCodeScan.b1f</DependentUpon>
     </Compile>
@@ -152,6 +155,9 @@
     </None>
     <None Include="Forms\Incoming\A_R Invoice.b1f__orig_srf">
       <DependentUpon>A_R Invoice.b1f</DependentUpon>
+    </None>
+    <None Include="Forms\Incoming\QRAmountConfirmation.b1f">
+      <FormCategory>UserForm</FormCategory>
     </None>
     <None Include="Forms\Incoming\QRCodeScan.b1f">
       <FormCategory>UserForm</FormCategory>
