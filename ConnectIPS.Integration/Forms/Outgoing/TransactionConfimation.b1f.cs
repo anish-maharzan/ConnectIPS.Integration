@@ -1,4 +1,5 @@
 ﻿using SAPbouiCOM.Framework;
+using System;
 
 namespace ConnectIPS.Integration.Forms.Outgoing
 {
@@ -82,6 +83,8 @@ namespace ConnectIPS.Integration.Forms.Outgoing
         {
             //fldSender.Select();
             //fldBeneficiary.Select();
+            UIAPIRawForm.Left = (Program.SBO_Application.Desktop.Width - UIAPIRawForm.Width) / 2;
+            UIAPIRawForm.Top = Convert.ToInt32((Program.SBO_Application.Desktop.Height - UIAPIRawForm.Height) / 2.5);
         }
 
         private SAPbouiCOM.EditText tSendBank;
