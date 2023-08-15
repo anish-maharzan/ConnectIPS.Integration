@@ -2,7 +2,6 @@
 using ConnectIPS.Integration.Models.ConnectIps.Interface;
 using ConnectIPS.Integration.Models.ConnectIps.Response;
 using ConnectIPS.Integration.Services.ConnectIps;
-using MainLibrary.SAPB1;
 using QRCoder;
 using SAPbouiCOM.Framework;
 using System;
@@ -22,6 +21,8 @@ namespace ConnectIPS.Integration.Forms.Incoming
 
         private SAPbouiCOM.Button bCheck;
         private SAPbouiCOM.PictureBox pbQrCode;
+        private SAPbouiCOM.Button Button0;
+        private SAPbouiCOM.CheckBox ChPaid;
 
         public QRCodeScan()
         {
@@ -33,7 +34,6 @@ namespace ConnectIPS.Integration.Forms.Incoming
             _count = count;
             _validationTraceId = validationTraceId;
             DisplayQRCode();
-
         }
 
         public QRCodeScan(string qrString, string validationTraceId, int type, int count)
@@ -56,7 +56,6 @@ namespace ConnectIPS.Integration.Forms.Incoming
             this.Button0 = ((SAPbouiCOM.Button)(this.GetItem("2").Specific));
             this.ChPaid = ((SAPbouiCOM.CheckBox)(this.GetItem("ChPaid").Specific));
             this.OnCustomInitialize();
-
         }
 
         /// <summary>
@@ -102,32 +101,36 @@ namespace ConnectIPS.Integration.Forms.Incoming
             return fullPath;
         }
 
-
-
         private void bCheck_ClickAfter(object sboObject, SAPbouiCOM.SBOItemEventArg pVal)
+        {
+            CheckPaymentStatus();
+        }
+
+        private void CheckPaymentStatus()
         {
             try
             {
                 var response = PaymentVerify().GetAwaiter().GetResult();
                 if (response.responseCode == "200")
                 {
-                    var form = (SAPbouiCOM.Form)Application.SBO_Application.Forms.GetFormByTypeAndCount(_type, _count);
+                    var form = Application.SBO_Application.Forms.GetFormByTypeAndCount(_type, _count);
                     var paymentButton = (SAPbouiCOM.Button)form.Items.Item("bPaymt").Specific;
                     paymentButton.Item.Click();
                     var respnse = (PaymentVerificationSuccessResponse)response;
-                    Program.SBO_Application.MessageBox(respnse.responseStatus);
+                    //Program.SBO_Application.StatusBar.SetText(respnse.responseStatus, SAPbouiCOM.BoMessageTime.bmt_Medium, SAPbouiCOM.BoStatusBarMessageType.smt_Success);
+                    Program.SBO_Application.StatusBar.SetText("Payment through ConnectIPS is done successfully.", SAPbouiCOM.BoMessageTime.bmt_Medium, SAPbouiCOM.BoStatusBarMessageType.smt_Success);
                     ChPaid.Checked = true;
                     Button0.Item.Click();
                 }
                 else
                 {
                     var respnse = (PaymentVerificationErrorResponse)response;
-                    Program.SBO_Application.MessageBox(respnse.responseDescription);
+                    Program.SBO_Application.StatusBar.SetText(respnse.responseDescription, SAPbouiCOM.BoMessageTime.bmt_Medium,SAPbouiCOM.BoStatusBarMessageType.smt_Error);
                 }
             }
-            catch (System.Exception ex)
+            catch (Exception ex)
             {
-                Program.SBO_Application.MessageBox($"Exception occurs: {ex.Message}");
+                Program.SBO_Application.MessageBox($"Error occurs: {ex.Message}");
             }
         }
 
@@ -143,8 +146,5 @@ namespace ConnectIPS.Integration.Forms.Incoming
             var response = await service.VerifyPayment(paymentVerification);
             return response;
         }
-
-        private SAPbouiCOM.Button Button0;
-        private SAPbouiCOM.CheckBox ChPaid;
     }
 }
