@@ -22,8 +22,8 @@ namespace ConnectIPS.Integration.Services.ConnectIps
         private readonly UserAuthentication TUserAuth;
         private readonly BasicAuthentication QrBasicAuth;
         private readonly UserAuthentication QrUserAuth;
-        private readonly string Filename;
         private readonly HttpHelper httpHelper;
+        private readonly string Filename;
 
         public ConnectIpsService()
         {
@@ -62,8 +62,7 @@ namespace ConnectIPS.Integration.Services.ConnectIps
 
         private string GetTokenString(QRGeneration request)
         {
-            string token = request.acquirerId + "," + request.merchantId + "," + request.merchantCategoryCode + "," + request.transactionCurrency + "," +
-   request.transactionAmount + "," + request.billNumber + "," + QrUserAuth.username;
+            string token = request.acquirerId + "," + request.merchantId + "," + request.merchantCategoryCode + "," + request.transactionCurrency + "," + request.transactionAmount + "," + request.billNumber + "," + QrUserAuth.username;
             return token;
         }
 
@@ -273,6 +272,12 @@ namespace ConnectIPS.Integration.Services.ConnectIps
                 var result = JsonConvert.DeserializeObject<PaymentVerificationErrorResponse>(responseString);
                 return result;
             }
+        }
+
+        public async Task GetReportAsync()
+        {
+            var qrToken = await GetQRTokenAsync();
+            var accessToken = qrToken.access_token;
         }
     }
 }

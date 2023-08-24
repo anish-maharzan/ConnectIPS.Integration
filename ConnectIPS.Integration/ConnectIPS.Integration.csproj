@@ -106,6 +106,9 @@
     <Compile Include="Forms\Outgoing\TransactionConfimation.b1f.cs">
       <DependentUpon>TransactionConfimation.b1f</DependentUpon>
     </Compile>
+    <Compile Include="Forms\Reporting\TransactionReport.b1f.cs" >
+	  <DependentUpon>TransactionReport.b1f</DependentUpon>
+	</Compile>
     <Compile Include="Helpers\AppConfig.cs" />
     <Compile Include="Helpers\GlobalMethods_Variables.cs">
       <SubType>Code</SubType>
@@ -172,6 +175,9 @@
     <None Include="Forms\Outgoing\TransactionConfimation.b1f">
       <FormCategory>UserForm</FormCategory>
     </None>
+    <None Include="Forms\Reporting\TransactionReport.b1f" >
+	  <FormCategory>UserForm</FormCategory>
+	</None>
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>

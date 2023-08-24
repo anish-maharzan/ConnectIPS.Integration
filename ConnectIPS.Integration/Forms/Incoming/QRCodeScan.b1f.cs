@@ -118,7 +118,7 @@ namespace ConnectIPS.Integration.Forms.Incoming
                     paymentButton.Item.Click();
                     var respnse = (PaymentVerificationSuccessResponse)response;
                     //Program.SBO_Application.StatusBar.SetText(respnse.responseStatus, SAPbouiCOM.BoMessageTime.bmt_Medium, SAPbouiCOM.BoStatusBarMessageType.smt_Success);
-                    Program.SBO_Application.StatusBar.SetText("Payment through ConnectIPS is done successfully.", SAPbouiCOM.BoMessageTime.bmt_Medium, SAPbouiCOM.BoStatusBarMessageType.smt_Success);
+                    Program.SBO_Application.StatusBar.SetText("Payment through NEPALPAY QR is done successfully.", SAPbouiCOM.BoMessageTime.bmt_Medium, SAPbouiCOM.BoStatusBarMessageType.smt_Success);
                     ChPaid.Checked = true;
                     Button0.Item.Click();
                 }

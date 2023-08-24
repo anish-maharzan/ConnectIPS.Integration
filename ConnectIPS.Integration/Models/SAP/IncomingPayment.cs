@@ -8,8 +8,10 @@ namespace ConnectIPS.Integration.Models.SAP
         public DateTime DocDate { get; set; }
         public DateTime DueDate { get; set; }
         public double PaymentAmount { get; set; }
-        public string DocCurrency { get; set; }
+        //public string DocCurrency { get; set; }
         public Invoice invoice { get; set; }
+        public int Branch { get; set; }
+        public string Project { get; set; }
     }
 
     class Invoice

@@ -1,4 +1,5 @@
-﻿using GlobalVariable;
+﻿using ConnectIPS.Integration.Forms.Reporting;
+using GlobalVariable;
 using MainLibrary.SAPB1;
 using MainLibrary.Utilities;
 using SAPbouiCOM.Framework;
@@ -11,14 +12,10 @@ namespace ConnectIPS.Integration.Helpers
 {
     public class ApplicationHandlers
     {
-        #region Members
         public static List<B1FormBase> FrmInstances = new List<B1FormBase>();
         private List<string> UDForms = new List<string> { "frm_FILL", "frm_FILL" };
         private static string sCredentials, sSenderEmail, Body, sSubject, sdocentry, squeryS, squeryE, CC;
 
-        #endregion
-
-        #region Constructor
         public ApplicationHandlers()
         {
             try
@@ -32,10 +29,8 @@ namespace ConnectIPS.Integration.Helpers
             catch (Exception ex)
             {
                 Utility.LogException(ex);
-                //Log.LogException(LogLevel.Error, ex);
             }
         }
-        #endregion
 
         #region Events
         private void SBO_Application_AppEvent(SAPbouiCOM.BoAppEventTypes EventType)
@@ -58,7 +53,6 @@ namespace ConnectIPS.Integration.Helpers
                     break;
             }
         }
-
         private void SBO_Application_MenuEvent(ref SAPbouiCOM.MenuEvent pVal, out bool BubbleEvent)
         {
             BubbleEvent = true;
@@ -72,7 +66,6 @@ namespace ConnectIPS.Integration.Helpers
                 {
                     switch (pVal.MenuUID)
                     {
-                       
                     }
                 }
             }
@@ -82,7 +75,6 @@ namespace ConnectIPS.Integration.Helpers
                 Application.SBO_Application.MessageBox(ex.ToString(), 1, "Ok", "", "");
             }
         }
-
         private void SBO_Application_MenuEventBefore(ref SAPbouiCOM.MenuEvent pVal, out bool BubbleEvent)
         {
             BubbleEvent = true;
@@ -90,26 +82,22 @@ namespace ConnectIPS.Integration.Helpers
             {
                 switch (pVal.MenuUID)
                 {
+                    case "TransactionReport":
+                        TransactionReport form = new TransactionReport();
+                        form.Show();
+                        break;
                 }
             }
             catch (Exception ex)
             {
             }
         }
-
         private void SBO_Application_ItemEvent(string FormUID, ref SAPbouiCOM.ItemEvent pVal, out bool BubbleEvent)
         {
             BubbleEvent = true;
             SAPbouiCOM.Matrix oMatrix;
             SAPbouiCOM.Application oApp = Application.SBO_Application;
-
-            if (pVal.FormTypeEx == "198" && pVal.ItemUID == "6" && pVal.BeforeAction == true && pVal.ColUID == "V_0" && pVal.EventType == SAPbouiCOM.BoEventTypes.et_MATRIX_LINK_PRESSED)
-            {
-
-                BubbleEvent = false;
-            }
         }
-
         private void SBO_Application_RightClickEvent(ref SAPbouiCOM.ContextMenuInfo eventInfo, out bool BubbleEvent)
         {
             BubbleEvent = true;
@@ -117,239 +105,31 @@ namespace ConnectIPS.Integration.Helpers
             {
                 SAPbouiCOM.Application oApp = Application.SBO_Application;
                 var oform = oApp.Forms.Item(eventInfo.FormUID);
-                if (oform.TypeEx == "60150")
-                {
-                    Globals.SetsDeleteForm("60150");
-                    //  B1Helper.addMenuItem("1280", "AR", "Add Row");
-                    B1Helper.addMenuItem("1280", "DL", "Delete Row");
-                }
-                if (oform.TypeEx == "60126")
-                {
-                    Globals.SetsDeleteForm("60126");
-                    B1Helper.addMenuItem("1280", "DL", "Delete Row");
-
-                }
-                if (oform.TypeEx == "60110")
-                {
-                    Globals.SetsDeleteForm("60110");
-                    B1Helper.addMenuItem("1280", "DL", "Delete Row");
-                }
-                if (oform.UniqueID == "model")
-                {
-                    Globals.SetsDeleteForm("model");
-                    B1Helper.addMenuItem("1280", "DL", "Delete Row");
-                }
             }
-        }
 
+        }
         private void SBO_Application_FormDataEvent(ref SAPbouiCOM.BusinessObjectInfo BusinessObjectInfo, out bool BubbleEvent)
         {
             BubbleEvent = true;
             switch (BusinessObjectInfo.FormTypeEx)
             {
+                ////Sales order
+                //case "139":
+                //    if (BusinessObjectInfo.EventType == SAPbouiCOM.BoEventTypes.et_FORM_DATA_ADD && BusinessObjectInfo.ActionSuccess == true)
+                //    {
+                //        SAPbouiCOM.Application oApp = Application.SBO_Application;
+                //        var UDFForm = oApp.Forms.Item(BusinessObjectInfo.FormUID);
+                //        string docEntry = ((SAPbouiCOM.EditText)UDFForm.Items.Item("8").Specific).Value;
+                //    }
+                //    break;
+                //default:
+                //    break;
 
             }
         }
         #endregion
 
         #region Methods
-        private void Notification_IVT(string docEntry, string docnum, string Notystatus, string Emailstatus)
-        {
-            string[] FWH;
-            string[] TWH;
-            string exception = string.Empty;
-
-            SAPbobsCOM.Recordset rs = (SAPbobsCOM.Recordset)B1Helper.DiCompany.GetBusinessObject(SAPbobsCOM.BoObjectTypes.BoRecordset);
-            string query = "\"max(to_int(ifnull(T0.\"Code\",0))) \"Code\" FROM \"@Z_NOTIF\"  T0";
-            rs.DoQuery(query);
-            FWH = Globals.Fromwarehouse.Split(',');
-            TWH = Globals.Towarehouse.Split(',');
-            var code = Convert.ToInt32(rs.Fields.Item("Code").Value.ToString()) + 1;
-            query = "insert into \"@Z_NOTIF\" values(" + Convert.ToInt32(code) + " ,'" + code + "','3','940','Inventory Transfer', " +
-            " '[ ' || '" + FWH[0].Trim() + "' || '] Transferred materials for your stock request [' || '" + docnum + "' || '] to ' || '" + TWH[0].Trim() + "' ,'/stock-transfer?display=' || '" + docnum + "' ,'" + FWH[0].Trim() + "','" + TWH[0].Trim() + "','N','N','N', now(),'')";
-
-            if (!string.IsNullOrEmpty(Notystatus))
-            {
-                if (Utility.Left(Notystatus, 7) != "Success")
-                {
-                    try
-                    {
-                        rs.DoQuery(query);
-                        exception = String.Empty;
-                    }
-                    catch (Exception ex)
-                    {
-                        exception = ex.Message;
-                    }
-                }
-                else { exception = String.Empty; }
-            }
-            else
-            {
-                try
-                {
-                    rs.DoQuery(query);
-                    exception = String.Empty;
-                }
-                catch (Exception ex)
-                {
-                    exception = ex.Message;
-                }
-            }//T0."U_Email"
-            if (exception.Length > 0)
-            { query = "update OWTR set \"U_Notification\" = 'Fail : ' || '" + exception + "' where \"DocEntry\" = '" + docEntry + "'"; }
-            else { query = "update OWTR set \"U_Notification\" = 'Success' where \"DocEntry\" = '" + docEntry + "'"; }
-            rs.DoQuery(query);
-
-        }
-        private void Notification_IVTR(string docEntry, string docnum, string Notystatus, string Emailstatus, string Cancel)
-        {
-            string[] FWH;
-            string[] TWH;
-            string exception = string.Empty;
-
-            SAPbobsCOM.Recordset rs = (SAPbobsCOM.Recordset)B1Helper.DiCompany.GetBusinessObject(SAPbobsCOM.BoObjectTypes.BoRecordset);
-            string query = "SELECT max(to_int(ifnull(T0.\"Code\",0))) \"Code\" FROM \"@Z_NOTIF\"  T0";
-            rs.DoQuery(query);
-
-            FWH = Globals.Fromwarehouse.Split(',');
-            TWH = Globals.Towarehouse.Split(',');
-            var code = Convert.ToInt32(rs.Fields.Item("Code").Value.ToString()) + 1;
-            query = "insert into \"@Z_NOTIF\" values(" + Convert.ToInt32(code) + " ,'" + code + "','2','1250000940','Inventory Transfer Request', " +
-            "  '" + FWH[0].Trim() + "' || ' Cancelled Inventory Transfer Request [' || '" + docnum + "' || '] to ' || '" + TWH[0].Trim() + "' ,'/stock-transfer?display=' || '" + docnum + "' ,'" + FWH[0].Trim() + "','" + TWH[0].Trim() + "','N','N','N',  now(),'')";
-
-            if (!string.IsNullOrEmpty(Notystatus))
-            {
-                if (Utility.Left(Notystatus, 7) != "Success")
-                {
-                    try
-                    {
-                        rs.DoQuery(query);
-                        exception = String.Empty;
-                    }
-                    catch (Exception ex)
-                    {
-                        exception = ex.Message;
-                    }
-                }
-                else { exception = String.Empty; }
-            }
-            else
-            {
-                try
-                {
-                    rs.DoQuery(query);
-                    exception = String.Empty;
-                }
-                catch (Exception ex)
-                {
-                    exception = ex.Message;
-                }
-            }//T0."U_Email"
-            if (exception.Length > 0)
-            { query = "update OWTQ set \"U_Notification\" = 'Fail : ' || '" + exception + "' where \"DocEntry\" = '" + docEntry + "'"; }
-            else { query = "update OWTQ set \"U_Notification\" = 'Success' where \"DocEntry\" = '" + docEntry + "'"; }
-            rs.DoQuery(query);
-
-        }
-        private void Notification_IVTA(string docEntry, string docnum, string Notystatus, string Emailstatus)
-        {
-            string FWH;
-            string[] TWH;
-            string exception = string.Empty;
-
-            SAPbobsCOM.Recordset rs = (SAPbobsCOM.Recordset)B1Helper.DiCompany.GetBusinessObject(SAPbobsCOM.BoObjectTypes.BoRecordset);
-            string query = "SELECT max(to_int(ifnull(T0.\"Code\",0))) \"Code\" FROM \"@Z_NOTIF\"  T0";
-            rs.DoQuery(query);
-
-            FWH = Globals.Fromwarehouse;
-            TWH = Globals.Towarehouse.Split(',');
-            var code = Convert.ToInt32(rs.Fields.Item("Code").Value.ToString()) + 1;
-            query = "insert into \"@Z_NOTIF\" values(" + Convert.ToInt32(code) + " ,'" + code + "','4','651','New Activity Creation', " +
-            "  '" + FWH + "' || ' New Activity is Created for Service Call [' || '" + docnum + "' || ']' ,'/call/details/' || '" + docnum + "','" + FWH + "','" + TWH[0].Trim() + "','N','N','N',  now(),'')";
-
-            if (!string.IsNullOrEmpty(Notystatus))
-            {
-                if (Utility.Left(Notystatus, 7) != "Success")
-                {
-                    try
-                    {
-                        rs.DoQuery(query);
-                        exception = String.Empty;
-                    }
-                    catch (Exception ex)
-                    {
-                        exception = ex.Message;
-                    }
-                }
-                else { exception = String.Empty; }
-            }
-            else
-            {
-                try
-                {
-                    rs.DoQuery(query);
-                    exception = String.Empty;
-                }
-                catch (Exception ex)
-                {
-                    exception = ex.Message;
-                }
-            }//T0."U_Email"
-            if (exception.Length > 0)
-            { query = "update OCLG set \"U_Notification\" = 'Fail : ' || '" + exception + "' where \"ClgCode\" = '" + docEntry + "'"; }
-            else { query = "update OCLG set \"U_Notification\" = 'Success' where \"ClgCode\" = '" + docEntry + "'"; }
-            rs.DoQuery(query);
-
-        }
-        private void Notification_IVTS(string docEntry, string docnum, string Notystatus, string Emailstatus, ref string exception)
-        {
-            string FWH;
-            string[] TWH;
-
-
-            SAPbobsCOM.Recordset rs = (SAPbobsCOM.Recordset)B1Helper.DiCompany.GetBusinessObject(SAPbobsCOM.BoObjectTypes.BoRecordset);
-            string query = "SELECT max(to_int(ifnull(T0.\"Code\",0))) \"Code\" FROM \"@Z_NOTIF\"  T0";
-            rs.DoQuery(query);
-
-            FWH = Globals.Fromwarehouse;
-            TWH = Globals.Towarehouse.Split(',');
-            var code = Convert.ToInt32(rs.Fields.Item("Code").Value.ToString()) + 1;
-            query = "insert into \"@Z_NOTIF\" values(" + Convert.ToInt32(code) + " ,'" + code + "','5','60110','Service Call ', " +
-            "  '" + FWH + "' || ' Activity is Assigned for Service Call [' || '" + docnum + "' || ']' ,'/call/details/' || '" + docnum + "','" + FWH + "','" + TWH[0].Trim() + "','N','N','N',  now(),'')";
-
-            if (!string.IsNullOrEmpty(Notystatus))
-            {
-                if (Utility.Left(Notystatus, 7) != "Success")
-                {
-                    try
-                    {
-                        rs.DoQuery(query);
-                        exception = String.Empty;
-                    }
-                    catch (Exception ex)
-                    {
-                        exception = ex.Message;
-                    }
-                }
-                else { exception = String.Empty; }
-            }
-            else
-            {
-                try
-                {
-                    rs.DoQuery(query);
-                    exception = String.Empty;
-                }
-                catch (Exception ex)
-                {
-                    exception = ex.Message;
-                }
-            }//T0."U_Email"
-
-
-        }
-
         // public long SendEmailNotification(string sCredentials, string sSenderEmail, string sBody, string sSubject, ref string sErrDesc)
         public static void SendEmailNotification()
         {
@@ -398,9 +178,7 @@ namespace ConnectIPS.Integration.Helpers
 
                 // return 0;
             }
-
         }
-
 
         public static void CallToChildThread(string sCredentials, string sSenderEmail, string sBody, string sSubject, ref string sErrDesc)
         {
@@ -413,7 +191,6 @@ namespace ConnectIPS.Integration.Helpers
             Thread.Sleep(sleepfor);
             Console.WriteLine("Child thread resumes");
         }
-
         #endregion
 
     }

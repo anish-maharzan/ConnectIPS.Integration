@@ -34,17 +34,15 @@ namespace ConnectIPS.Integration
                 SBO_Application = SAPbouiCOM.Framework.Application.SBO_Application;
                 oCompany = (SAPbobsCOM.Company)SBO_Application.Company.GetDICompany();
                 Menu MyMenu = new Menu();
-                Menu.addMenu();
+                Menu.AddMenu();
 
-                GlobalMethods_Variables.SetsCreateUDF(ConfigurationManager.AppSettings["UDF"].ToString());
-                if (GlobalMethods_Variables.CreateUDF == "N")
+                var UDF = ConfigurationManager.AppSettings["UDF"].ToString();
+                if (UDF == "N")
                 {
                     AddonInfoInfo.InstallUDOs();
-                    //CreateFMS();
                 }
-                //AddonInfoInfo.GetCommonSettings();
                 var applicationHandler = new ApplicationHandlers();
-                var addonName = "ConnectIPS Integration";
+                var addonName = "NEPALPAY Integration";
                 Application.SBO_Application.StatusBar.SetSystemMessage($"{addonName} Add-on installed successfully.", SAPbouiCOM.BoMessageTime.bmt_Short, SAPbouiCOM.BoStatusBarMessageType.smt_Success);
                 oApp.Run();
             }
