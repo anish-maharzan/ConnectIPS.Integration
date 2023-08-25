@@ -92,18 +92,10 @@ namespace ConnectIPS.Integration.Helpers
                 string[] FormColumn = new string[0];
                 string[,] srt = new string[,] { { "N", "No" }, { "Y", "Yes" } };
 
-                B1Helper.AddField("CONNIPS", "NCHL-NPI (Bank Integration)", "OVPM", BoFieldTypes.db_Alpha, 1, BoYesNoEnum.tNO, BoFldSubTypes.st_None, false, "");
-                B1Helper.AddField("TRANTYPE", "Connect IPS Transaction Type", "OVPM", BoFieldTypes.db_Alpha, 15, BoYesNoEnum.tNO, BoFldSubTypes.st_None, false, "");
-                B1Helper.AddField("CATEGORY", "Category Purpose", "OVPM", BoFieldTypes.db_Alpha, 20, BoYesNoEnum.tNO, BoFldSubTypes.st_None, false, "");
-                B1Helper.AddField("VALIDATED", "Verified Account", "OVPM", BoFieldTypes.db_Alpha, 1, BoYesNoEnum.tNO, BoFldSubTypes.st_None, false, "");
-                B1Helper.AddField("PAYSTATUS", "Connect IPS Payment Status", "OVPM", BoFieldTypes.db_Alpha, 1, BoYesNoEnum.tNO, BoFldSubTypes.st_None, false, "");
-                B1Helper.AddField("CIBATCH", "Connect IPS Batch", "OVPM", BoFieldTypes.db_Alpha, 254, BoYesNoEnum.tNO, BoFldSubTypes.st_None, false, "");
-
                 B1Helper.AddField("PAYSTATUS", "Connect IPS", "OINV", BoFieldTypes.db_Alpha, 1, BoYesNoEnum.tNO, BoFldSubTypes.st_None, false, "");
                 B1Helper.AddField("TRACEID", "Validation TraceId", "OINV", BoFieldTypes.db_Alpha, 20, BoYesNoEnum.tNO, BoFldSubTypes.st_None, false, "");
                 B1Helper.AddField("ISQRPAY", "Is QR Payment?", "OINV", BoFieldTypes.db_Alpha, 1, BoYesNoEnum.tNO, BoFldSubTypes.st_None, false, "");
                 B1Helper.AddField("QRAMT", "QR Payment Amount", "OINV", BoFieldTypes.db_Float, 1, BoYesNoEnum.tNO, BoFldSubTypes.st_Price, false, "");
-
 
                 //B1Helper.AddTable("NCHL", "Connect IPS Integration", BoUTBTableType.bott_MasterData);
                 //B1Helper.AddField("INBKACCT", "Incoming Bank Account", "NCHL", BoFieldTypes.db_Alpha, 100, BoYesNoEnum.tNO, BoFldSubTypes.st_None, true, "");
@@ -111,15 +103,6 @@ namespace ConnectIPS.Integration.Helpers
                 //FormColumn[0] = "Code";
                 //FormColumn[1] = "U_INBKACCT";
                 //CreateUDO("NCHL", "Incoming Bank Account", "NCHL", FormColumn, BoUDOObjType.boud_MasterData, "F");
-
-                B1Helper.AddTable("OLPT", "Terms of Payment", BoUTBTableType.bott_MasterData);
-                B1Helper.AddField("PAYTERMS", "Payment Terms", "OLPT", BoFieldTypes.db_Alpha, 50, BoYesNoEnum.tYES, BoFldSubTypes.st_None, true, "");
-                Array.Resize(ref FormColumn, 2);
-                Array.Resize(ref ChildTable, 0);
-                FormColumn[0] = "Code";
-                FormColumn[1] = "U_PAYTERMS";
-                CreateUDO("OLPT", "Terms Of Payment", "OLPT", FormColumn, BoUDOObjType.boud_MasterData, "F");
-
 
                 return UDOAdded;
             }

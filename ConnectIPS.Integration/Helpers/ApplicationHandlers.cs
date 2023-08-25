@@ -1,5 +1,4 @@
-﻿using ConnectIPS.Integration.Forms.Reporting;
-using GlobalVariable;
+﻿using GlobalVariable;
 using MainLibrary.SAPB1;
 using MainLibrary.Utilities;
 using SAPbouiCOM.Framework;
@@ -80,13 +79,6 @@ namespace ConnectIPS.Integration.Helpers
             BubbleEvent = true;
             try
             {
-                switch (pVal.MenuUID)
-                {
-                    case "TransactionReport":
-                        TransactionReport form = new TransactionReport();
-                        form.Show();
-                        break;
-                }
             }
             catch (Exception ex)
             {

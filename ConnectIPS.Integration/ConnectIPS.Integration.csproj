@@ -100,15 +100,6 @@
     <Compile Include="Forms\Incoming\QRCodeScan.b1f.cs">
       <DependentUpon>QRCodeScan.b1f</DependentUpon>
     </Compile>
-    <Compile Include="Forms\Outgoing\Outgoing Payments.b1f.cs">
-      <DependentUpon>Outgoing Payments.b1f</DependentUpon>
-    </Compile>
-    <Compile Include="Forms\Outgoing\TransactionConfimation.b1f.cs">
-      <DependentUpon>TransactionConfimation.b1f</DependentUpon>
-    </Compile>
-    <Compile Include="Forms\Reporting\TransactionReport.b1f.cs" >
-	  <DependentUpon>TransactionReport.b1f</DependentUpon>
-	</Compile>
     <Compile Include="Helpers\AppConfig.cs" />
     <Compile Include="Helpers\GlobalMethods_Variables.cs">
       <SubType>Code</SubType>
@@ -165,19 +156,6 @@
     <None Include="Forms\Incoming\QRCodeScan.b1f">
       <FormCategory>UserForm</FormCategory>
     </None>
-    <None Include="Forms\Outgoing\Outgoing Payments.b1f">
-      <FormCategory>SystemForm</FormCategory>
-      <SubType>Designer</SubType>
-    </None>
-    <None Include="Forms\Outgoing\Outgoing Payments.b1f__orig_srf">
-      <DependentUpon>Outgoing Payments.b1f</DependentUpon>
-    </None>
-    <None Include="Forms\Outgoing\TransactionConfimation.b1f">
-      <FormCategory>UserForm</FormCategory>
-    </None>
-    <None Include="Forms\Reporting\TransactionReport.b1f" >
-	  <FormCategory>UserForm</FormCategory>
-	</None>
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>

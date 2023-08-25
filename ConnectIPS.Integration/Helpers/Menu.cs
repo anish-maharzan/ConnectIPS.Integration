@@ -6,7 +6,6 @@ namespace ConnectIPS.Integration.Helpers
     {
         public static void AddMenu()
         {
-            //B1Helper.addMenuItem("43520", "TransactionReport", "Transaction Report");
         }
 
         public static void RemoveMenu()
