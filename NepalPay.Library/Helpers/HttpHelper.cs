@@ -6,7 +6,7 @@ using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ConnectIPS.Integration.Helpers
+namespace NepalPay.Library.Helpers
 {
     public class HttpHelper
     {

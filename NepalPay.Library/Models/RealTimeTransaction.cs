@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace ConnectIPS.Integration.Models.ConnectIps
+namespace NepalPay.Library.Models
 {
     public class CIpsBatchDetail
     {

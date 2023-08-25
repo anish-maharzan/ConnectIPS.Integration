@@ -1,6 +1,6 @@
-﻿namespace ConnectIPS.Integration.Models.ConnectIps
+﻿namespace NepalPay.Library.Models
 {
-    class UserAuthentication
+    public class UserAuthentication
     {
         public string username { get; set; }
         public string password { get; set; }

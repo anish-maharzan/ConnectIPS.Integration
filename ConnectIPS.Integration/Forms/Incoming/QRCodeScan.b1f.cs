@@ -1,7 +1,8 @@
-﻿using ConnectIPS.Integration.Models.ConnectIps;
-using ConnectIPS.Integration.Models.ConnectIps.Interface;
-using ConnectIPS.Integration.Models.ConnectIps.Response;
-using ConnectIPS.Integration.Services.ConnectIps;
+﻿using NepalPay.Library.Data;
+using NepalPay.Library.Models;
+using NepalPay.Library.Models.Interface;
+using NepalPay.Library.Models.Response;
+using NepalPay.Library.Services;
 using QRCoder;
 using SAPbouiCOM.Framework;
 using System;
@@ -142,7 +143,7 @@ namespace ConnectIPS.Integration.Forms.Incoming
                 merchantId = Credential.MerchantCode,
                 validationTraceId = _validationTraceId
             };
-            var service = new ConnectIpsService();
+            var service = new NepalPayService();
             var response = await service.VerifyPayment(paymentVerification);
             return response;
         }

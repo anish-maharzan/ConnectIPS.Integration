@@ -1,6 +1,6 @@
-﻿namespace ConnectIPS.Integration.Models.ConnectIps.Interface
+﻿namespace NepalPay.Library.Models.Interface
 {
-    interface IResponse
+    public interface IResponse
     {
         string responseCode { get; set; }
         //string responseStatus { get; set; }

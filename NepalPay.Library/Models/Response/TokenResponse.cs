@@ -1,4 +1,4 @@
-﻿namespace ConnectIPS.Integration.Models.ConnectIps.Response
+﻿namespace NepalPay.Library.Models.Response
 {
     public class TokenResponse
     {

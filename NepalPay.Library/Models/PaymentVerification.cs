@@ -1,6 +1,6 @@
-﻿namespace ConnectIPS.Integration.Models.ConnectIps
+﻿namespace NepalPay.Library.Models
 {
-    class PaymentVerification
+    public class PaymentVerification
     {
         public string validationTraceId { get; set; }
         public string merchantId { get; set; }

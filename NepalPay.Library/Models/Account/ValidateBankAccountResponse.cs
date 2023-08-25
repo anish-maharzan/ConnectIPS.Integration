@@ -1,6 +1,6 @@
-﻿namespace ConnectIPS.Integration.Models.ConnectIps.Account
+﻿namespace NepalPay.Library.Models.Account
 {
-    class ValidateBankAccountResponse
+    public class ValidateBankAccountResponse
     {
         public string bankId { get; set; }
         public string branchId { get; set; }

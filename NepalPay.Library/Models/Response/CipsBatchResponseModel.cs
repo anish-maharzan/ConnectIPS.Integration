@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 
-namespace ConnectIPS.Integration.Models.ConnectIps.Response
+namespace NepalPay.Library.Models.Response
 {
-    class CipsBatchResponseModel
+    public class CipsBatchResponseModel
     {
         public CipsBatchResponse cipsBatchResponse { get; set; }
         public List<CipsTxnResponse> cipsTxnResponseList { get; set; }

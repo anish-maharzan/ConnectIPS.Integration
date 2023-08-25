@@ -1,6 +1,8 @@
-﻿namespace ConnectIPS.Integration.Models.ConnectIps
+﻿using NepalPay.Library.Models;
+
+namespace NepalPay.Library.Data
 {
-    static class Credential
+    public static class Credential
     {
         static Credential()
         {
@@ -44,6 +46,6 @@
         public static string MerchantCode { get; set; }
         public static int MerchantCategoryCode { get; set; }
         public static string MerchantName { get; set; }
-        public static string AcquirerId{ get; set; }
+        public static string AcquirerId { get; set; }
     }
 }

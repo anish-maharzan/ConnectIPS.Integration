@@ -1,22 +1,23 @@
-﻿using ConnectIPS.Integration.Helpers;
-using ConnectIPS.Integration.Models.ConnectIps;
-using ConnectIPS.Integration.Models.ConnectIps.Account;
-using ConnectIPS.Integration.Models.ConnectIps.Interface;
-using ConnectIPS.Integration.Models.ConnectIps.Response;
+﻿using NepalPay.Library.Data;
+using NepalPay.Library.Helpers;
+using NepalPay.Library.Models;
+using NepalPay.Library.Models.Account;
+using NepalPay.Library.Models.Interface;
+using NepalPay.Library.Models.Response;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
-using System.Windows.Forms;
 
-namespace ConnectIPS.Integration.Services.ConnectIps
+namespace NepalPay.Library.Services
 {
-    class ConnectIpsService
+    public class NepalPayService
     {
         private readonly BasicAuthentication TBasicAuth;
         private readonly UserAuthentication TUserAuth;
@@ -25,14 +26,14 @@ namespace ConnectIPS.Integration.Services.ConnectIps
         private readonly HttpHelper httpHelper;
         private readonly string Filename;
 
-        public ConnectIpsService()
+        public NepalPayService()
         {
             TBasicAuth = Credential.TBasicAuth;
             TUserAuth = Credential.TUserAuth;
             QrUserAuth = Credential.QRUserAuth;
             QrBasicAuth = Credential.QRBasicAuth;
 
-            Filename = Application.StartupPath + "\\Files\\NPI.pfx";
+            Filename= Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + "\\Files\\NPI.pfx";
             httpHelper = new HttpHelper();
         }
 
@@ -66,7 +67,7 @@ namespace ConnectIPS.Integration.Services.ConnectIps
             return token;
         }
 
-        private string GenerateConnectIPSToken(string stringToHash, string pfxPassword = "123")
+        private string GenerateNepalPayToken(string stringToHash, string pfxPassword = "123")
         {
             try
             {
@@ -99,7 +100,7 @@ namespace ConnectIPS.Integration.Services.ConnectIps
             }
         }
 
-        private string GetConnectIpsToken(RealTimeTransaction request)
+        private string GetNepalPayToken(RealTimeTransaction request)
         {
             var batchDetail = request.cipsBatchDetail;
             var batchString = GetBatchString(batchDetail.batchId, batchDetail.debtorAgent, batchDetail.debtorBranch, batchDetail.debtorAccount, batchDetail.batchAmount, batchDetail.batchCrncy);
@@ -109,11 +110,11 @@ namespace ConnectIPS.Integration.Services.ConnectIps
 
             var tokenString = GetTokenString(batchString, transactionString, TUserAuth.username);
 
-            var token = GenerateConnectIPSToken(tokenString);
+            var token = GenerateNepalPayToken(tokenString);
             return token;
         }
 
-        private string GetConnectIpsToken(NonRealTimeTransaction request)
+        private string GetNepalPayToken(NonRealTimeTransaction request)
         {
             var batchDetail = request.nchlIpsBatchDetail;
             var batchString = GetBatchString(batchDetail.batchId, batchDetail.debtorAgent, batchDetail.debtorBranch, batchDetail.debtorAccount, batchDetail.batchAmount.ToString(), batchDetail.batchCrncy, batchDetail.categoryPurpose);
@@ -123,15 +124,15 @@ namespace ConnectIPS.Integration.Services.ConnectIps
 
             var tokenString = GetTokenString(batchString, transactionString, TUserAuth.username);
 
-            var token = GenerateConnectIPSToken(tokenString);
+            var token = GenerateNepalPayToken(tokenString);
             return token;
         }
 
-        private string GetConnectIpsToken(QRGeneration request)
+        private string GetNepalPayToken(QRGeneration request)
         {
             string tokenString = GetTokenString(request);
 
-            var token = GenerateConnectIPSToken(tokenString);
+            var token = GenerateNepalPayToken(tokenString);
             return token;
         }
 
@@ -199,7 +200,7 @@ namespace ConnectIPS.Integration.Services.ConnectIps
         public async Task<CipsBatchResponseModel> RealTimeFundTransferAsync(RealTimeTransaction request)
         {
             string accessToken = await GetAccessTokenAsync();
-            request.token = GetConnectIpsToken(request);
+            request.token = GetNepalPayToken(request);
 
             string url = "http://demo.connectips.com:6065/api/postcipsbatch";
             string requestBody = JsonConvert.SerializeObject(request);
@@ -211,7 +212,7 @@ namespace ConnectIPS.Integration.Services.ConnectIps
         public async Task<CipsBatchResponseModel> NonRealTimeFundTransferAsync(NonRealTimeTransaction request)
         {
             string accessToken = await GetAccessTokenAsync();
-            request.token = GetConnectIpsToken(request);
+            request.token = GetNepalPayToken(request);
 
             string url = "http://demo.connectips.com:6065/api/postnchlipsbatch";
             string requestBody = JsonConvert.SerializeObject(request);
@@ -243,7 +244,7 @@ namespace ConnectIPS.Integration.Services.ConnectIps
         {
             var qrToken = await GetQRTokenAsync();
             var accessToken = qrToken.access_token;
-            request.token = GetConnectIpsToken(request);
+            request.token = GetNepalPayToken(request);
 
             string url = "https://devopennpi.connectips.com/qr/generateQR";
             string requestBody = JsonConvert.SerializeObject(request);

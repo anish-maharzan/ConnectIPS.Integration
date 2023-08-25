@@ -1,8 +1,8 @@
-﻿using ConnectIPS.Integration.Models.ConnectIps.Interface;
+﻿using NepalPay.Library.Models.Interface;
 using System;
 using System.Collections.Generic;
 
-namespace ConnectIPS.Integration.Models.ConnectIps.Response
+namespace NepalPay.Library.Models.Response
 {
     public class PaymentVerificationErrorResponse: IResponse
     {

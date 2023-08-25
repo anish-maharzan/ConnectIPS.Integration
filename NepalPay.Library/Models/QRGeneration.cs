@@ -1,4 +1,6 @@
-﻿namespace ConnectIPS.Integration.Models.ConnectIps
+﻿using NepalPay.Library.Data;
+
+namespace NepalPay.Library.Models
 {
     public class QRGeneration
     {

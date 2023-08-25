@@ -1,4 +1,4 @@
-﻿namespace ConnectIPS.Integration.Models.ConnectIps
+﻿namespace NepalPay.Library.Models
 {
     class BankAccountDetail
     {
