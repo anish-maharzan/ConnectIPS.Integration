@@ -42,6 +42,7 @@ namespace ConnectIPS.Integration.Helpers
                 B1Helper.AddField("ACQUIRERID", "AcquirerId", "NCHLQR", BoFieldTypes.db_Alpha, 20, BoYesNoEnum.tNO, BoFldSubTypes.st_None, false, "");
                 
                 B1Helper.AddField("FILENAME", "Filename", "NCHLQR", BoFieldTypes.db_Alpha, 254, BoYesNoEnum.tNO, BoFldSubTypes.st_None, false, "");
+                B1Helper.AddField("BASEURL", "Base Url", "NCHLQR", BoFieldTypes.db_Alpha, 254, BoYesNoEnum.tNO, BoFldSubTypes.st_None, false, "");
 
                 return UDOAdded;
             }

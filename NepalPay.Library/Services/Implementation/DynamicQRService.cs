@@ -1,12 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Reflection;
-using System.Security.Cryptography;
-using System.Security.Cryptography.X509Certificates;
-using System.Text;
-using System.Threading.Tasks;
-using NepalPay.Library.Credentials;
+﻿using NepalPay.Library.Credentials;
 using NepalPay.Library.Helpers;
 using NepalPay.Library.Models.Abstraction;
 using NepalPay.Library.Models.Authentication;
@@ -15,6 +7,11 @@ using NepalPay.Library.Models.Response;
 using NepalPay.Library.Models.Transaction;
 using NepalPay.Library.Services.Abstraction;
 using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
+using System.Reflection;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace NepalPay.Library.Services.Implementation
 {
@@ -29,7 +26,7 @@ namespace NepalPay.Library.Services.Implementation
         {
             QrBasicAuth = DynamicQRCredential.QrBasicAuth;
             QrUserAuth = DynamicQRCredential.QrUserAuth;
-            Filename = NCHLCredential.FileName;
+            Filename = DynamicQRCredential.FileName;
             httpHelper = new HttpHelper();
         }
         
@@ -42,7 +39,7 @@ namespace NepalPay.Library.Services.Implementation
             string url = "https://devopennpi.connectips.com/qr/generateQR";
             string requestBody = JsonConvert.SerializeObject(request);
             httpHelper.AddBearerToken(accessToken);
-            var response = await httpHelper.Post<QRGenerationResponse>(url, requestBody);
+            var response = await httpHelper.PostAsync<QRGenerationResponse>(url, requestBody);
             return response;
         }
 
@@ -82,7 +79,8 @@ namespace NepalPay.Library.Services.Implementation
                 formData.Add(propertyName, propertyValue);
             }
 
-            httpHelper.AddBasicAuthHeader(QrBasicAuth.Username, QrBasicAuth.Password);
+            string credentials = Convert.ToBase64String(Encoding.ASCII.GetBytes($"{QrBasicAuth.Username}:{QrBasicAuth.Password}"));
+            httpHelper.AddBasicAuthHeader(credentials);
             var response = await httpHelper.PostFormData<TokenResponse>(postUrl, formData);
             return response;
         }
@@ -91,41 +89,8 @@ namespace NepalPay.Library.Services.Implementation
         {
             string tokenString = GetTokenString(request);
 
-            var token = GenerateNepalPayToken(tokenString);
+            var token = TokenService.GenerateNCHLToken(tokenString);
             return token;
-        }
-
-        private string GenerateNepalPayToken(string stringToHash, string pfxPassword = "123")
-        {
-            try
-            {
-                using (var crypt = new SHA256Managed())
-                using (var cert = new X509Certificate2(Filename, pfxPassword, X509KeyStorageFlags.Exportable))
-                {
-                    byte[] data = Encoding.UTF8.GetBytes(stringToHash);
-
-                    RSA csp = null;
-                    if (cert != null)
-                    {
-                        csp = cert.PrivateKey as RSA;
-                    }
-
-                    if (csp == null)
-                    {
-                        throw new Exception("No valid cert was found");
-                    }
-
-                    csp.ImportParameters(csp.ExportParameters(true));
-                    byte[] signatureByte = csp.SignData(data, HashAlgorithmName.SHA256, RSASignaturePadding.Pkcs1);
-
-                    string tokenStringForReference = Convert.ToBase64String(signatureByte);
-                    return Convert.ToBase64String(signatureByte);
-                }
-            }
-            catch (Exception ex)
-            {
-                return string.Empty;
-            }
         }
 
         private string GetTokenString(QRGeneration request)

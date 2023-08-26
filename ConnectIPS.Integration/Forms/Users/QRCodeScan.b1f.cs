@@ -146,8 +146,8 @@ namespace ConnectIPS.Integration.Forms.Users
         {
             var paymentVerification = new PaymentVerification()
             {
-                acquirerId = NCHLCredential.AcquirerId,
-                merchantId = NCHLCredential.MerchantCode,
+                acquirerId = DynamicQRCredential.AcquirerId,
+                merchantId = DynamicQRCredential.MerchantCode,
                 validationTraceId = _validationTraceId
             };
             var service = new DynamicQRService();

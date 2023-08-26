@@ -41,7 +41,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Credentials\NCHLCredential.cs" />
     <Compile Include="Credentials\TransactionCredential.cs" />
     <Compile Include="Helpers\HttpHelper.cs" />
     <Compile Include="Models\Account\ValidateBankAccount.cs" />
@@ -68,6 +67,7 @@
     <Compile Include="Services\Implementation\NonRealTimeService.cs" />
     <Compile Include="Services\Implementation\DynamicQRService.cs" />
     <Compile Include="Services\Implementation\RealTimeService.cs" />
+    <Compile Include="Services\Implementation\TokenService.cs" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json">

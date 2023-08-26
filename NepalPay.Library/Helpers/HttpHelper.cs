@@ -3,7 +3,6 @@ using System;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Net.Http.Headers;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace NepalPay.Library.Helpers
@@ -22,13 +21,12 @@ namespace NepalPay.Library.Helpers
             _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
         }
 
-        public void AddBasicAuthHeader(string username, string password)
+        public void AddBasicAuthHeader(string credentials)
         {
-            string credentials = Convert.ToBase64String(Encoding.ASCII.GetBytes($"{username}:{password}"));
             _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", credentials);
         }
 
-        public async Task<string> Get(string url)
+        public async Task<string> GetAsync(string url)
         {
             try
             {
@@ -43,10 +41,9 @@ namespace NepalPay.Library.Helpers
             }
         }
 
-        public async Task<T> Post<T>(string url, string requestBody)
+        public async Task<T> PostAsync<T>(string url, string requestBody)
         {
-            try
-            {
+           
                 HttpContent content = new StringContent(requestBody, System.Text.Encoding.UTF8, "application/json");
                 HttpResponseMessage responseMsg = await _httpClient.PostAsync(url, content);
                 responseMsg.EnsureSuccessStatusCode();
@@ -54,35 +51,21 @@ namespace NepalPay.Library.Helpers
 
                 var result = JsonConvert.DeserializeObject<T>(response);
                 return result;
-            }
-            catch (HttpRequestException ex)
-            {
-                var error = $"Error occurred while making POST request: {ex.Message}";
-                throw new Exception(error);
-            }
         }
 
         public async Task<string> Post(string url, string requestBody)
         {
-            try
-            {
+           
                 HttpContent content = new StringContent(requestBody, System.Text.Encoding.UTF8, "application/json");
                 HttpResponseMessage responseMsg = await _httpClient.PostAsync(url, content);
                 responseMsg.EnsureSuccessStatusCode();
                 string response = await responseMsg.Content.ReadAsStringAsync();
                 return response;
-            }
-            catch (HttpRequestException ex)
-            {
-                var error = $"Error occurred while making POST request: {ex.Message}";
-                throw new Exception(error);
-            }
         }
 
         public async Task<T> PostFormData<T>(string url, Dictionary<string, string> formData)
         {
-            try
-            {
+            
                 HttpContent content = new FormUrlEncodedContent(formData);
                 HttpResponseMessage responseMsg = await _httpClient.PostAsync(url, content);
                 responseMsg.EnsureSuccessStatusCode();
@@ -90,12 +73,6 @@ namespace NepalPay.Library.Helpers
 
                 var result = JsonConvert.DeserializeObject<T>(response);
                 return result;
-            }
-            catch (HttpRequestException ex)
-            {
-                var error = $"Error occurred while making POST request: {ex.Message}";
-                throw new Exception(error);
-            }
         }
     }
 }

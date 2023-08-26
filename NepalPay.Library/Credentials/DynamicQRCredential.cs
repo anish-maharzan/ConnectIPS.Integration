@@ -6,5 +6,11 @@ namespace NepalPay.Library.Credentials
     {
         public static BasicAuthentication QrBasicAuth;
         public static UserAuthentication QrUserAuth;
+        public static string MerchantCode;
+        public static int MerchantCategoryCode;
+        public static string MerchantName;
+        public static string AcquirerId;
+        public static string FileName;
+        public static string BaseUrl;
     }
 }

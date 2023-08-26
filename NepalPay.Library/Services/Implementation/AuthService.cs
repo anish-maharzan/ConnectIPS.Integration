@@ -1,13 +1,16 @@
 ﻿using NepalPay.Library.Credentials;
 using NepalPay.Library.Helpers;
 using NepalPay.Library.Models.Response;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace NepalPay.Library.Services.Implementation
 {
-    public static class AuthService 
+    public static class AuthService
     {
         private static readonly HttpHelper httpHelper;
         static AuthService()
@@ -25,23 +28,17 @@ namespace NepalPay.Library.Services.Implementation
         public static async Task<TokenResponse> GetAccessTokenAsync(string refreshToken)
         {
             string postUrl = "http://demo.connectips.com:9095/oauth/token";
-
-            var formData = new Dictionary<string, string>();
             var objFormData = new
             {
                 grant_type = "refresh_token",
                 refresh_token = refreshToken
             };
 
-            PropertyInfo[] properties = objFormData.GetType().GetProperties();
-            foreach (PropertyInfo property in properties)
-            {
-                string propertyName = property.Name;
-                string propertyValue = property.GetValue(objFormData).ToString();
-                formData.Add(propertyName, propertyValue);
-            }
-
-            httpHelper.AddBasicAuthHeader(TransactionCredential.TBasicAuth.Username, TransactionCredential.TBasicAuth.Password);
+            var formData = objFormData.GetType()
+                .GetProperties()
+                .ToDictionary(property => property.Name, property => property.GetValue(objFormData).ToString());
+            string credentials = Convert.ToBase64String(Encoding.ASCII.GetBytes($"{TransactionCredential.TBasicAuth.Username}:{TransactionCredential.TBasicAuth.Password}"));
+            httpHelper.AddBasicAuthHeader(credentials);
             var response = await httpHelper.PostFormData<TokenResponse>(postUrl, formData);
             return response;
         }
@@ -59,8 +56,8 @@ namespace NepalPay.Library.Services.Implementation
                 string propertyValue = property.GetValue(TransactionCredential.TUserAuth).ToString();
                 formData.Add(propertyName, propertyValue);
             }
-
-            httpHelper.AddBasicAuthHeader(TransactionCredential.TBasicAuth.Username, TransactionCredential.TBasicAuth.Password);
+            string credentials = Convert.ToBase64String(Encoding.ASCII.GetBytes($"{TransactionCredential.TBasicAuth.Username}:{TransactionCredential.TBasicAuth.Password}"));
+            httpHelper.AddBasicAuthHeader(credentials);
             var response = await httpHelper.PostFormData<TokenResponse>(postUrl, formData);
             return response;
         }

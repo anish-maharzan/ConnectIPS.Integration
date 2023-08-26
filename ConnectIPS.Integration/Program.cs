@@ -41,7 +41,7 @@ namespace ConnectIPS.Integration
                 {
                     AddonInfoInfo.InstallUDOs();
                 }
-                InitializeNCHL_HardCode();
+                InitializeNCHL();
                 var applicationHandler = new ApplicationHandlers();
                 var addonName = "Nepal QR Integration";
                 Application.SBO_Application.StatusBar.SetSystemMessage($"{addonName} Add-on installed successfully.", SAPbouiCOM.BoMessageTime.bmt_Short, SAPbouiCOM.BoStatusBarMessageType.smt_Success);
@@ -73,11 +73,12 @@ namespace ConnectIPS.Integration
                     grant_type = "password"
                 };
 
-                NCHLCredential.MerchantCode = Rec.Fields.Item(4).Value.ToString();
-                NCHLCredential.MerchantCategoryCode = Convert.ToInt32(Rec.Fields.Item(5).Value.ToString());
-                NCHLCredential.MerchantName = Rec.Fields.Item(6).Value.ToString();
-                NCHLCredential.AcquirerId = Rec.Fields.Item(7).Value.ToString();
-                NCHLCredential.FileName = Rec.Fields.Item(8).Value.ToString();
+                DynamicQRCredential.MerchantCode = Rec.Fields.Item(4).Value.ToString();
+                DynamicQRCredential.MerchantCategoryCode = Convert.ToInt32(Rec.Fields.Item(5).Value.ToString());
+                DynamicQRCredential.MerchantName = Rec.Fields.Item(6).Value.ToString();
+                DynamicQRCredential.AcquirerId = Rec.Fields.Item(7).Value.ToString();
+                DynamicQRCredential.FileName = Rec.Fields.Item(8).Value.ToString();
+                DynamicQRCredential.BaseUrl = Rec.Fields.Item(9).Value.ToString();
             }
             else
             {
@@ -85,28 +86,5 @@ namespace ConnectIPS.Integration
             }
         }
 
-        private static void InitializeNCHL_HardCode()
-        {
-
-            DynamicQRCredential.QrBasicAuth = new BasicAuthentication()
-            {
-                Username = "neo",
-                Password = "Abcd@123"
-            };
-
-            DynamicQRCredential.QrUserAuth = new UserAuthentication()
-            {
-                username = "NEO@999",
-                password = "123Abcd@123",
-                grant_type = "password"
-            };
-
-            NCHLCredential.MerchantCode = "040105EAHLB";
-            NCHLCredential.MerchantCategoryCode = 4816;
-            NCHLCredential.MerchantName = "Neosoft";
-            NCHLCredential.AcquirerId = "00000401";
-            NCHLCredential.FileName = "C:\\Anish\\NPI\\NPI.pfx";
-
-        }
     }
 }
