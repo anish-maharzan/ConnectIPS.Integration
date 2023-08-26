@@ -41,35 +41,39 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Data\Credential.cs" />
+    <Compile Include="Credentials\NCHLCredential.cs" />
+    <Compile Include="Credentials\TransactionCredential.cs" />
     <Compile Include="Helpers\HttpHelper.cs" />
     <Compile Include="Models\Account\ValidateBankAccount.cs" />
     <Compile Include="Models\Account\ValidateBankAccountResponse.cs" />
-    <Compile Include="Models\BankAccountDetail.cs" />
-    <Compile Include="Models\BasicAuthentication.cs" />
-    <Compile Include="Models\Interface\IResponse.cs" />
-    <Compile Include="Models\NonRealTimeTransaction.cs" />
-    <Compile Include="Models\PaymentVerification.cs" />
-    <Compile Include="Models\QRGeneration.cs" />
-    <Compile Include="Models\RealTimeTransaction.cs" />
+    <Compile Include="Models\Account\BankAccountDetail.cs" />
+    <Compile Include="Models\Authentication\BasicAuthentication.cs" />
+    <Compile Include="Models\Abstraction\IResponse.cs" />
+    <Compile Include="Models\Transaction\NonRealTimeTransaction.cs" />
+    <Compile Include="Models\Transaction\PaymentVerification.cs" />
+    <Compile Include="Models\QR\QRGeneration.cs" />
+    <Compile Include="Models\Transaction\RealTimeTransaction.cs" />
     <Compile Include="Models\Response\CipsBatchResponseModel.cs" />
     <Compile Include="Models\Response\PaymentVerificationResponse.cs" />
     <Compile Include="Models\Response\QRGenerationResponse.cs" />
     <Compile Include="Models\Response\ReponseCode.cs" />
     <Compile Include="Models\Response\TokenResponse.cs" />
-    <Compile Include="Models\UserAuthentication.cs" />
+    <Compile Include="Models\Authentication\UserAuthentication.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Services\NepalPayService.cs" />
+    <Compile Include="Services\Abstraction\INonRealTimeService.cs" />
+    <Compile Include="Services\Abstraction\IDynamicQRService.cs" />
+    <Compile Include="Services\Abstraction\IRealTimeService.cs" />
+    <Compile Include="Services\Implementation\AuthService.cs" />
+    <Compile Include="Credentials\DynamicQRCredential.cs" />
+    <Compile Include="Services\Implementation\NonRealTimeService.cs" />
+    <Compile Include="Services\Implementation\DynamicQRService.cs" />
+    <Compile Include="Services\Implementation\RealTimeService.cs" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json">
       <Version>12.0.3</Version>
     </PackageReference>
   </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Files\NPI.pfx">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </EmbeddedResource>
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

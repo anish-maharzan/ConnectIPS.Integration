@@ -1,4 +1,4 @@
-﻿namespace NepalPay.Library.Models.Interface
+﻿namespace NepalPay.Library.Models.Abstraction
 {
     public interface IResponse
     {

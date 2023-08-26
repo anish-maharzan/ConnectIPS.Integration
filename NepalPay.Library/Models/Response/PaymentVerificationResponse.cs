@@ -1,4 +1,4 @@
-﻿using NepalPay.Library.Models.Interface;
+﻿using NepalPay.Library.Models.Abstraction;
 using System;
 using System.Collections.Generic;
 

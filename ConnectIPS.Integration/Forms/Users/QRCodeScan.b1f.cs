@@ -1,8 +1,8 @@
-﻿using NepalPay.Library.Data;
-using NepalPay.Library.Models;
-using NepalPay.Library.Models.Interface;
+﻿using NepalPay.Library.Credentials;
+using NepalPay.Library.Models.Abstraction;
 using NepalPay.Library.Models.Response;
-using NepalPay.Library.Services;
+using NepalPay.Library.Models.Transaction;
+using NepalPay.Library.Services.Implementation;
 using QRCoder;
 using SAPbouiCOM.Framework;
 using System;
@@ -146,11 +146,11 @@ namespace ConnectIPS.Integration.Forms.Users
         {
             var paymentVerification = new PaymentVerification()
             {
-                acquirerId = Credential.AcquirerId,
-                merchantId = Credential.MerchantCode,
+                acquirerId = NCHLCredential.AcquirerId,
+                merchantId = NCHLCredential.MerchantCode,
                 validationTraceId = _validationTraceId
             };
-            var service = new NepalPayService();
+            var service = new DynamicQRService();
             var response = await service.VerifyPayment(paymentVerification);
             return response;
         }

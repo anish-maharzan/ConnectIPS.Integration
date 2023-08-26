@@ -143,10 +143,7 @@
       <Install>false</Install>
     </BootstrapperPackage>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Models\" />
-    <Folder Include="Services\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <ProjectReference Include="..\MainLibrary\MainLibrary.csproj">
       <Project>{3dc8b10b-d57e-46ea-8e09-c94c6ee89169}</Project>

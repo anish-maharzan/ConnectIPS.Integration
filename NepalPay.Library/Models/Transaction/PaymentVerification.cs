@@ -1,4 +1,4 @@
-﻿namespace NepalPay.Library.Models
+﻿namespace NepalPay.Library.Models.Transaction
 {
     public class PaymentVerification
     {

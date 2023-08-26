@@ -1,16 +1,17 @@
-﻿using NepalPay.Library.Data;
+﻿using NepalPay.Library.Credentials;
+using System;
 
-namespace NepalPay.Library.Models
+namespace NepalPay.Library.Models.QR
 {
     public class QRGeneration
     {
         public QRGeneration()
         {
             pointOfInitialization = 12;
-            acquirerId = Credential.AcquirerId;
-            merchantId = Credential.MerchantCode;
-            merchantName = Credential.MerchantName;
-            merchantCategoryCode = Credential.MerchantCategoryCode;
+            acquirerId = NCHLCredential.AcquirerId;
+            merchantId = NCHLCredential.MerchantCode;
+            merchantName = NCHLCredential.MerchantName;
+            merchantCategoryCode = Convert.ToInt32(NCHLCredential.MerchantCategoryCode);
             merchantCountry = "NP";
             merchantCity = "Kathmandu";
             merchantPostalCode = "4600";
