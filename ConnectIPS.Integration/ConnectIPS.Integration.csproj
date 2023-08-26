@@ -97,7 +97,6 @@
     <Compile Include="Forms\Users\QRCodeScan.b1f.cs">
       <DependentUpon>QRCodeScan.b1f</DependentUpon>
     </Compile>
-    <Compile Include="Helpers\AppConfig.cs" />
     <Compile Include="Helpers\GlobalMethods_Variables.cs">
       <SubType>Code</SubType>
     </Compile>
