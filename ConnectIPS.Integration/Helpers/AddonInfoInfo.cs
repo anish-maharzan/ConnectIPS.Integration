@@ -31,7 +31,7 @@ namespace ConnectIPS.Integration.Helpers
                 string[] FindColumn = new string[0];
                 string[] FormColumn = new string[0];
 
-               
+
             }
             catch
             {
@@ -79,7 +79,7 @@ namespace ConnectIPS.Integration.Helpers
         }
 
         #endregion
-        
+
         #region Methods
         public static bool InstallUDOs()
         {
@@ -92,17 +92,24 @@ namespace ConnectIPS.Integration.Helpers
                 string[] FormColumn = new string[0];
                 string[,] srt = new string[,] { { "N", "No" }, { "Y", "Yes" } };
 
-                B1Helper.AddField("PAYSTATUS", "Connect IPS", "OINV", BoFieldTypes.db_Alpha, 1, BoYesNoEnum.tNO, BoFldSubTypes.st_None, false, "");
-                B1Helper.AddField("TRACEID", "Validation TraceId", "OINV", BoFieldTypes.db_Alpha, 20, BoYesNoEnum.tNO, BoFldSubTypes.st_None, false, "");
-                B1Helper.AddField("ISQRPAY", "Is QR Payment?", "OINV", BoFieldTypes.db_Alpha, 1, BoYesNoEnum.tNO, BoFldSubTypes.st_None, false, "");
-                B1Helper.AddField("QRAMT", "QR Payment Amount", "OINV", BoFieldTypes.db_Float, 1, BoYesNoEnum.tNO, BoFldSubTypes.st_Price, false, "");
+                B1Helper.AddField("NHCLQR", "NHCL QR", "OINV", BoFieldTypes.db_Alpha, 1, BoYesNoEnum.tYES, BoFldSubTypes.st_None, false, "N", srt);
+                B1Helper.AddField("NHCLSTATUS", "NHCL Status", "OINV", BoFieldTypes.db_Alpha, 1, BoYesNoEnum.tYES, BoFldSubTypes.st_None, false, "N", srt);
+                B1Helper.AddField("NHCLTRACEID", "NHCL ValidationTraceId", "OINV", BoFieldTypes.db_Alpha, 20, BoYesNoEnum.tNO, BoFldSubTypes.st_None, false);
 
-                //B1Helper.AddTable("NCHL", "Connect IPS Integration", BoUTBTableType.bott_MasterData);
-                //B1Helper.AddField("INBKACCT", "Incoming Bank Account", "NCHL", BoFieldTypes.db_Alpha, 100, BoYesNoEnum.tNO, BoFldSubTypes.st_None, true, "");
-                //Array.Resize(ref FormColumn, 2);
-                //FormColumn[0] = "Code";
-                //FormColumn[1] = "U_INBKACCT";
-                //CreateUDO("NCHL", "Incoming Bank Account", "NCHL", FormColumn, BoUDOObjType.boud_MasterData, "F");
+                B1Helper.AddTable("NCHLQR", "NepalPay-QR Configuration", BoUTBTableType.bott_MasterData);
+                B1Helper.AddField("UA_USERNAME", "User Auth Username", "NCHLQR", BoFieldTypes.db_Alpha, 20, BoYesNoEnum.tNO, BoFldSubTypes.st_None, false, "");
+                B1Helper.AddField("UA_PASSWORD", "User Auth Password", "NCHLQR", BoFieldTypes.db_Alpha, 20, BoYesNoEnum.tNO, BoFldSubTypes.st_None, false, "");
+                B1Helper.AddField("BA_USERNAME", "Basic Auth Username", "NCHLQR", BoFieldTypes.db_Alpha, 20, BoYesNoEnum.tNO, BoFldSubTypes.st_None, false, "");
+                B1Helper.AddField("BA_PASSWORD", "Basic Auth Password", "NCHLQR", BoFieldTypes.db_Alpha, 20, BoYesNoEnum.tNO, BoFldSubTypes.st_None, false, "");
+                Array.Resize(ref FindColumn, 0);
+                Array.Resize(ref FormColumn, 5);
+
+                FormColumn[0] = "Code";
+                FormColumn[1] = "U_UA_USERNAME";
+                FormColumn[2] = "U_UA_PASSWORD";
+                FormColumn[3] = "U_BA_USERNAME";
+                FormColumn[4] = "U_BA_PASSWORD";
+                B1Helper.CreateUdo("NCHLQR", "NepalPay-QR Configuration", "NCHLQR", "M", "Y", FormColumn, null);
 
                 return UDOAdded;
             }
@@ -114,16 +121,20 @@ namespace ConnectIPS.Integration.Helpers
             }
         }
 
-        private static bool CreateUDO(string CodeID, string Name, string TableName, string[] FormColoums, SAPbobsCOM.BoUDOObjType ObjectType, string ManageSeries)
+        private static bool CreateUDO(string CodeID, string Name, string TableName, string[] FormColoums, SAPbobsCOM.BoUDOObjType ObjectType)
         {
             SAPbobsCOM.UserObjectsMD oUserObjectMD = default(SAPbobsCOM.UserObjectsMD);
             try
             {
                 oUserObjectMD = ((SAPbobsCOM.UserObjectsMD)(Program.oCompany.GetBusinessObject(SAPbobsCOM.BoObjectTypes.oUserObjectsMD)));
                 if (oUserObjectMD.GetByKey(CodeID) == true)
-                {
                     return true;
-                }
+
+                oUserObjectMD.Code = CodeID;
+                oUserObjectMD.Name = Name;
+                oUserObjectMD.ObjectType = ObjectType;
+                oUserObjectMD.TableName = TableName;
+
                 oUserObjectMD.CanLog = SAPbobsCOM.BoYesNoEnum.tYES;
                 oUserObjectMD.CanFind = SAPbobsCOM.BoYesNoEnum.tYES;
                 oUserObjectMD.CanClose = SAPbobsCOM.BoYesNoEnum.tYES;
@@ -132,38 +143,23 @@ namespace ConnectIPS.Integration.Helpers
                 oUserObjectMD.ManageSeries = SAPbobsCOM.BoYesNoEnum.tNO;
                 oUserObjectMD.CanYearTransfer = SAPbobsCOM.BoYesNoEnum.tNO;
 
-                oUserObjectMD.Code = CodeID;
-                oUserObjectMD.Name = Name;
-                oUserObjectMD.TableName = TableName;
-                oUserObjectMD.ObjectType = ObjectType;
-
                 oUserObjectMD.CanCreateDefaultForm = SAPbobsCOM.BoYesNoEnum.tYES;
                 oUserObjectMD.EnableEnhancedForm = SAPbobsCOM.BoYesNoEnum.tNO;
                 oUserObjectMD.MenuItem = SAPbobsCOM.BoYesNoEnum.tNO;
-                oUserObjectMD.MenuCaption = Name;
-                oUserObjectMD.FatherMenuID = 47616;
-                oUserObjectMD.Position = 0;
-                oUserObjectMD.MenuUID = CodeID;
+                //oUserObjectMD.MenuCaption = Name;
+                //oUserObjectMD.FatherMenuID = 47616;
+                //oUserObjectMD.Position = 0;
+                //oUserObjectMD.MenuUID = CodeID;
 
                 if (FormColoums != null)
                 {
                     for (int i = 0; i <= FormColoums.Length - 1; i++)
                     {
-                        if (FormColoums[i].Trim() != "U_RUNDB")
-                        {
-                            oUserObjectMD.FormColumns.FormColumnAlias = FormColoums[i];
-                            oUserObjectMD.FormColumns.Editable = SAPbobsCOM.BoYesNoEnum.tNO;
-                            oUserObjectMD.FormColumns.Add();
-                        }
-                        else
-                        {
-                            oUserObjectMD.FormColumns.FormColumnAlias = FormColoums[i];
-                            oUserObjectMD.FormColumns.Editable = SAPbobsCOM.BoYesNoEnum.tYES;
-                            oUserObjectMD.FormColumns.Add();
-                        }
+                        oUserObjectMD.FormColumns.FormColumnAlias = FormColoums[i];
+                        oUserObjectMD.FormColumns.Editable = SAPbobsCOM.BoYesNoEnum.tNO;
+                        oUserObjectMD.FormColumns.Add();
                     }
                 }
-                // check for errors in the process
                 RetCode = oUserObjectMD.Add();
 
                 if (RetCode != 0)
@@ -311,9 +307,9 @@ namespace ConnectIPS.Integration.Helpers
                     result = "0";
                 else
                     if (result.Equals("0"))
-                    {
-                        result = "1";
-                    }
+                {
+                    result = "1";
+                }
 
                 return result;
             }

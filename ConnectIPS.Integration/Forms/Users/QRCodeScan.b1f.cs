@@ -10,21 +10,11 @@ using System.Drawing;
 using System.IO;
 using System.Threading.Tasks;
 
-namespace ConnectIPS.Integration.Forms.Incoming
+namespace ConnectIPS.Integration.Forms.Users
 {
-    [FormAttribute("ConnectIPS.Integration.Forms.Incoming.QRCode", "Forms/Incoming/QRCodeScan.b1f")]
+    [FormAttribute("ConnectIPS.Integration.Forms.Users.QRCodeScan", "Forms/Users/QRCodeScan.b1f")]
     class QRCodeScan : UserFormBase
     {
-        private readonly string _validationTraceId;
-        private readonly string _qrString;
-        private readonly int _type;
-        private readonly int _count;
-
-        private SAPbouiCOM.Button bCheck;
-        private SAPbouiCOM.PictureBox pbQrCode;
-        private SAPbouiCOM.Button Button0;
-        private SAPbouiCOM.CheckBox ChPaid;
-
         public QRCodeScan()
         {
         }
@@ -54,9 +44,11 @@ namespace ConnectIPS.Integration.Forms.Incoming
             this.pbQrCode = ((SAPbouiCOM.PictureBox)(this.GetItem("pQr").Specific));
             this.bCheck = ((SAPbouiCOM.Button)(this.GetItem("bChk").Specific));
             this.bCheck.ClickAfter += new SAPbouiCOM._IButtonEvents_ClickAfterEventHandler(this.bCheck_ClickAfter);
+            this.BtnCancel = ((SAPbouiCOM.Button)(this.GetItem("BtnCancel").Specific));
+            this.BtnCancel.ClickAfter += new SAPbouiCOM._IButtonEvents_ClickAfterEventHandler(this.BtnCancel_ClickAfter);
             this.Button0 = ((SAPbouiCOM.Button)(this.GetItem("2").Specific));
-            this.ChPaid = ((SAPbouiCOM.CheckBox)(this.GetItem("ChPaid").Specific));
             this.OnCustomInitialize();
+
         }
 
         /// <summary>
@@ -70,6 +62,27 @@ namespace ConnectIPS.Integration.Forms.Incoming
         {
             UIAPIRawForm.Left = (Program.SBO_Application.Desktop.Width - UIAPIRawForm.Width)/2;
             UIAPIRawForm.Top = Convert.ToInt32( (Program.SBO_Application.Desktop.Height - UIAPIRawForm.Height)/2.5);
+        }
+
+        private readonly string _validationTraceId;
+        private readonly string _qrString;
+        private readonly int _type;
+        private readonly int _count;
+
+        private SAPbouiCOM.Button bCheck;
+        private SAPbouiCOM.PictureBox pbQrCode;
+        private SAPbouiCOM.Button BtnCancel;
+        private SAPbouiCOM.Button Button0;
+
+
+        private void bCheck_ClickAfter(object sboObject, SAPbouiCOM.SBOItemEventArg pVal)
+        {
+            CheckPaymentStatus();
+        }
+
+        private void BtnCancel_ClickAfter(object sboObject, SAPbouiCOM.SBOItemEventArg pVal)
+        {
+            Button0.Item.Click();
         }
 
         private void DisplayQRCode()
@@ -102,31 +115,25 @@ namespace ConnectIPS.Integration.Forms.Incoming
             return fullPath;
         }
 
-        private void bCheck_ClickAfter(object sboObject, SAPbouiCOM.SBOItemEventArg pVal)
-        {
-            CheckPaymentStatus();
-        }
-
-        private void CheckPaymentStatus()
+        private async Task CheckPaymentStatus()
         {
             try
             {
-                var response = PaymentVerify().GetAwaiter().GetResult();
+                var response = await VerifyPayment();
                 if (response.responseCode == "200")
                 {
-                    var form = Application.SBO_Application.Forms.GetFormByTypeAndCount(_type, _count);
-                    var paymentButton = (SAPbouiCOM.Button)form.Items.Item("bPaymt").Specific;
+                    var arInvoice = Application.SBO_Application.Forms.GetFormByTypeAndCount(_type, _count);
+                    var paymentButton = (SAPbouiCOM.Button)arInvoice.Items.Item("bPaymt").Specific;
                     paymentButton.Item.Click();
+
                     var respnse = (PaymentVerificationSuccessResponse)response;
-                    //Program.SBO_Application.StatusBar.SetText(respnse.responseStatus, SAPbouiCOM.BoMessageTime.bmt_Medium, SAPbouiCOM.BoStatusBarMessageType.smt_Success);
-                    Program.SBO_Application.StatusBar.SetText("Payment through NEPALPAY QR is done successfully.", SAPbouiCOM.BoMessageTime.bmt_Medium, SAPbouiCOM.BoStatusBarMessageType.smt_Success);
-                    ChPaid.Checked = true;
-                    Button0.Item.Click();
+                    Program.SBO_Application.StatusBar.SetText("NepalPay QR Payment is successful.", SAPbouiCOM.BoMessageTime.bmt_Medium, SAPbouiCOM.BoStatusBarMessageType.smt_Success);
+                    BtnCancel.Item.Click();
                 }
                 else
                 {
                     var respnse = (PaymentVerificationErrorResponse)response;
-                    Program.SBO_Application.StatusBar.SetText(respnse.responseDescription, SAPbouiCOM.BoMessageTime.bmt_Medium,SAPbouiCOM.BoStatusBarMessageType.smt_Error);
+                    Program.SBO_Application.StatusBar.SetText(respnse.responseDescription, SAPbouiCOM.BoMessageTime.bmt_Medium, SAPbouiCOM.BoStatusBarMessageType.smt_Error);
                 }
             }
             catch (Exception ex)
@@ -135,7 +142,7 @@ namespace ConnectIPS.Integration.Forms.Incoming
             }
         }
 
-        private async Task<IResponse> PaymentVerify()
+        private async Task<IResponse> VerifyPayment()
         {
             var paymentVerification = new PaymentVerification()
             {
@@ -147,5 +154,6 @@ namespace ConnectIPS.Integration.Forms.Incoming
             var response = await service.VerifyPayment(paymentVerification);
             return response;
         }
+
     }
 }

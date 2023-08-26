@@ -42,7 +42,7 @@ namespace ConnectIPS.Integration
                     AddonInfoInfo.InstallUDOs();
                 }
                 var applicationHandler = new ApplicationHandlers();
-                var addonName = "NEPALPAY Integration";
+                var addonName = "NepalPay-QR Integration";
                 Application.SBO_Application.StatusBar.SetSystemMessage($"{addonName} Add-on installed successfully.", SAPbouiCOM.BoMessageTime.bmt_Short, SAPbouiCOM.BoStatusBarMessageType.smt_Success);
                 oApp.Run();
             }
