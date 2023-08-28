@@ -16,7 +16,7 @@ namespace NepalPay.Library.Services.Implementation
 
         public NonRealTimeService(NonRealTimeTransaction request)
         {
-            httpHelper = new HttpHelper();
+            httpHelper = new HttpHelper("http://demo.connectips.com");
             _request = request;
 
         }
@@ -26,7 +26,7 @@ namespace NepalPay.Library.Services.Implementation
             string accessToken = await AuthService.GetAccessTokenAsync();
             _request.token = GetNepalPayToken(_request);
 
-            string url = "http://demo.connectips.com:6065/api/postnchlipsbatch";
+            string url = ":6065/api/postnchlipsbatch";
             string requestBody = JsonConvert.SerializeObject(_request);
             httpHelper.AddBearerToken(accessToken);
             var response = await httpHelper.PostAsync<CipsBatchResponseModel>(url, requestBody);

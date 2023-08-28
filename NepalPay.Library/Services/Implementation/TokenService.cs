@@ -10,34 +10,28 @@ namespace NepalPay.Library.Services.Implementation
     {
         public static string GenerateNCHLToken(string stringToHash, string pfxPassword = "123")
         {
-            try
+
+            using (var crypt = new SHA256Managed())
+            using (var cert = new X509Certificate2(DynamicQRCredential.FileName, pfxPassword, X509KeyStorageFlags.Exportable))
             {
-                using (var crypt = new SHA256Managed())
-                using (var cert = new X509Certificate2(DynamicQRCredential.FileName, pfxPassword, X509KeyStorageFlags.Exportable))
+                byte[] data = Encoding.UTF8.GetBytes(stringToHash);
+
+                RSA csp = null;
+                if (cert != null)
                 {
-                    byte[] data = Encoding.UTF8.GetBytes(stringToHash);
-
-                    RSA csp = null;
-                    if (cert != null)
-                    {
-                        csp = cert.PrivateKey as RSA;
-                    }
-
-                    if (csp == null)
-                    {
-                        throw new Exception("No valid cert was found");
-                    }
-
-                    csp.ImportParameters(csp.ExportParameters(true));
-                    byte[] signatureByte = csp.SignData(data, HashAlgorithmName.SHA256, RSASignaturePadding.Pkcs1);
-
-                    string tokenStringForReference = Convert.ToBase64String(signatureByte);
-                    return Convert.ToBase64String(signatureByte);
+                    csp = cert.PrivateKey as RSA;
                 }
-            }
-            catch (Exception ex)
-            {
-                return string.Empty;
+
+                if (csp == null)
+                {
+                    throw new Exception("No valid cert was found");
+                }
+
+                csp.ImportParameters(csp.ExportParameters(true));
+                byte[] signatureByte = csp.SignData(data, HashAlgorithmName.SHA256, RSASignaturePadding.Pkcs1);
+
+                string tokenStringForReference = Convert.ToBase64String(signatureByte);
+                return Convert.ToBase64String(signatureByte);
             }
         }
 

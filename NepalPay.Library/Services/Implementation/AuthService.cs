@@ -15,7 +15,7 @@ namespace NepalPay.Library.Services.Implementation
         private static readonly HttpHelper httpHelper;
         static AuthService()
         {
-            httpHelper = new HttpHelper();
+            httpHelper = new HttpHelper("http://demo.connectips.com");
         }
 
         public static async Task<string> GetAccessTokenAsync()
@@ -27,7 +27,7 @@ namespace NepalPay.Library.Services.Implementation
 
         public static async Task<TokenResponse> GetAccessTokenAsync(string refreshToken)
         {
-            string postUrl = "http://demo.connectips.com:9095/oauth/token";
+            string postUrl = ":9095/oauth/token";
             var objFormData = new
             {
                 grant_type = "refresh_token",
@@ -39,13 +39,13 @@ namespace NepalPay.Library.Services.Implementation
                 .ToDictionary(property => property.Name, property => property.GetValue(objFormData).ToString());
             string credentials = Convert.ToBase64String(Encoding.ASCII.GetBytes($"{TransactionCredential.TBasicAuth.Username}:{TransactionCredential.TBasicAuth.Password}"));
             httpHelper.AddBasicAuthHeader(credentials);
-            var response = await httpHelper.PostFormData<TokenResponse>(postUrl, formData);
+            var response = await httpHelper.PostAsync<TokenResponse>(postUrl, formData);
             return response;
         }
 
         public static async Task<TokenResponse> GetRefreshTokenAsync()
         {
-            string postUrl = "http://demo.connectips.com:6065/oauth/token";
+            string postUrl = ":6065/oauth/token";
 
             var formData = new Dictionary<string, string>();
 
@@ -58,7 +58,7 @@ namespace NepalPay.Library.Services.Implementation
             }
             string credentials = Convert.ToBase64String(Encoding.ASCII.GetBytes($"{TransactionCredential.TBasicAuth.Username}:{TransactionCredential.TBasicAuth.Password}"));
             httpHelper.AddBasicAuthHeader(credentials);
-            var response = await httpHelper.PostFormData<TokenResponse>(postUrl, formData);
+            var response = await httpHelper.PostAsync<TokenResponse>(postUrl, formData);
             return response;
         }
     }

@@ -15,7 +15,7 @@ namespace NepalPay.Library.Services.Implementation
 
         public RealTimeService()
         {
-            httpHelper = new HttpHelper();
+            httpHelper = new HttpHelper("http://demo.connectips.com");
         }
 
         public async Task<CipsBatchResponseModel> FundTransferAsync(RealTimeTransaction request)
@@ -23,7 +23,7 @@ namespace NepalPay.Library.Services.Implementation
             string accessToken = await AuthService.GetAccessTokenAsync();
             request.token = GetNepalPayToken(request);
 
-            string url = "http://demo.connectips.com:6065/api/postcipsbatch";
+            string url = ":6065/api/postcipsbatch";
             string requestBody = JsonConvert.SerializeObject(request);
             httpHelper.AddBearerToken(accessToken);
             var response = await httpHelper.PostAsync<CipsBatchResponseModel>(url, requestBody);

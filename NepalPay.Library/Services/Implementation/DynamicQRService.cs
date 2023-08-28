@@ -1,7 +1,6 @@
 ﻿using NepalPay.Library.Credentials;
 using NepalPay.Library.Helpers;
 using NepalPay.Library.Models.Abstraction;
-using NepalPay.Library.Models.Authentication;
 using NepalPay.Library.Models.QR;
 using NepalPay.Library.Models.Response;
 using NepalPay.Library.Models.Transaction;
@@ -17,17 +16,11 @@ namespace NepalPay.Library.Services.Implementation
 {
     public class DynamicQRService : IDynamicQRService
     {
-        private readonly BasicAuthentication QrBasicAuth;
-        private readonly UserAuthentication QrUserAuth;
         private readonly HttpHelper httpHelper;
-        private readonly string Filename;
 
         public DynamicQRService()
         {
-            QrBasicAuth = DynamicQRCredential.QrBasicAuth;
-            QrUserAuth = DynamicQRCredential.QrUserAuth;
-            Filename = DynamicQRCredential.FileName;
-            httpHelper = new HttpHelper();
+            httpHelper = new HttpHelper("https://devopennpi.connectips.com");
         }
         
         public async Task<QRGenerationResponse> GenerateQRAsync(QRGeneration request)
@@ -36,7 +29,7 @@ namespace NepalPay.Library.Services.Implementation
             var accessToken = qrToken.access_token;
             request.token = GetNepalPayToken(request);
 
-            string url = "https://devopennpi.connectips.com/qr/generateQR";
+            string url = "qr/generateQR";
             string requestBody = JsonConvert.SerializeObject(request);
             httpHelper.AddBearerToken(accessToken);
             var response = await httpHelper.PostAsync<QRGenerationResponse>(url, requestBody);
@@ -48,10 +41,10 @@ namespace NepalPay.Library.Services.Implementation
             var qrToken = await GetQRTokenAsync();
             var accessToken = qrToken.access_token;
 
-            string url = "https://devopennpi.connectips.com/nQR/v1/merchanttxnreport";
+            string url = "nQR/v1/merchanttxnreport";
             string requestBody = JsonConvert.SerializeObject(request);
             httpHelper.AddBearerToken(accessToken);
-            var responseString = await httpHelper.Post(url, requestBody);
+            var responseString = await httpHelper.PostAsync(url, requestBody);
             var response = JsonConvert.DeserializeObject<PaymentVerificationErrorResponse>(responseString);
             if (response.responseCode == "200")
             {
@@ -67,21 +60,21 @@ namespace NepalPay.Library.Services.Implementation
 
         public async Task<TokenResponse> GetQRTokenAsync()
         {
-            string postUrl = "https://devopennpi.connectips.com/oauth/token";
+            string postUrl = "oauth/token";
 
             var formData = new Dictionary<string, string>();
 
-            PropertyInfo[] properties = QrUserAuth.GetType().GetProperties();
+            PropertyInfo[] properties = DynamicQRCredential.QrUserAuth.GetType().GetProperties();
             foreach (PropertyInfo property in properties)
             {
                 string propertyName = property.Name;
-                string propertyValue = property.GetValue(QrUserAuth).ToString();
+                string propertyValue = property.GetValue(DynamicQRCredential.QrUserAuth).ToString();
                 formData.Add(propertyName, propertyValue);
             }
 
-            string credentials = Convert.ToBase64String(Encoding.ASCII.GetBytes($"{QrBasicAuth.Username}:{QrBasicAuth.Password}"));
+            string credentials = Convert.ToBase64String(Encoding.ASCII.GetBytes($"{DynamicQRCredential.QrBasicAuth.Username}:{DynamicQRCredential.QrBasicAuth.Password}"));
             httpHelper.AddBasicAuthHeader(credentials);
-            var response = await httpHelper.PostFormData<TokenResponse>(postUrl, formData);
+            var response = await httpHelper.PostAsync<TokenResponse>(postUrl, formData);
             return response;
         }
 
@@ -95,9 +88,8 @@ namespace NepalPay.Library.Services.Implementation
 
         private string GetTokenString(QRGeneration request)
         {
-            string token = request.acquirerId + "," + request.merchantId + "," + request.merchantCategoryCode + "," + request.transactionCurrency + "," + request.transactionAmount + "," + request.billNumber + "," + QrUserAuth.username;
+            string token = request.acquirerId + "," + request.merchantId + "," + request.merchantCategoryCode + "," + request.transactionCurrency + "," + request.transactionAmount + "," + request.billNumber + "," + DynamicQRCredential.QrUserAuth.username;
             return token;
         }
-
     }
 }
