@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -10,9 +11,10 @@ namespace NepalPay.Library.Helpers
     {
         private readonly HttpClient _httpClient;
 
-        public HttpHelper()
+        public HttpHelper(string baseUrl)
         {
             _httpClient = new HttpClient();
+            _httpClient.BaseAddress = new Uri(baseUrl);
         }
 
         public void AddBearerToken(string token)
@@ -27,41 +29,58 @@ namespace NepalPay.Library.Helpers
 
         public async Task<string> GetAsync(string url)
         {
-            
-                HttpResponseMessage response = await _httpClient.GetAsync(url);
-                response.EnsureSuccessStatusCode();
-                return await response.Content.ReadAsStringAsync();
+            HttpResponseMessage response = await _httpClient.GetAsync(url);
+            response.EnsureSuccessStatusCode();
+            return await response.Content.ReadAsStringAsync();
         }
 
         public async Task<T> PostAsync<T>(string url, string requestBody)
         {
-                HttpContent content = new StringContent(requestBody, System.Text.Encoding.UTF8, "application/json");
-                HttpResponseMessage responseMsg = await _httpClient.PostAsync(url, content);
-                responseMsg.EnsureSuccessStatusCode();
+            HttpContent content = new StringContent(requestBody, System.Text.Encoding.UTF8, "application/json");
+            HttpResponseMessage responseMsg = await _httpClient.PostAsync(url, content);
+            if (responseMsg.IsSuccessStatusCode)
+            {
                 string response = await responseMsg.Content.ReadAsStringAsync();
-
                 var result = JsonConvert.DeserializeObject<T>(response);
                 return result;
+            }
+            else
+            {
+                throw new Exception($"Request failed with status code: {responseMsg.StatusCode}");
+            }
         }
 
-        public async Task<string> Post(string url, string requestBody)
+        public async Task<string> PostAsync(string url, string requestBody)
         {
-                HttpContent content = new StringContent(requestBody, System.Text.Encoding.UTF8, "application/json");
-                HttpResponseMessage responseMsg = await _httpClient.PostAsync(url, content);
-                responseMsg.EnsureSuccessStatusCode();
+            HttpContent content = new StringContent(requestBody, System.Text.Encoding.UTF8, "application/json");
+            HttpResponseMessage responseMsg = await _httpClient.PostAsync(url, content);
+            if (responseMsg.IsSuccessStatusCode)
+            {
                 string response = await responseMsg.Content.ReadAsStringAsync();
                 return response;
+            }
+            else
+            {
+                throw new Exception($"Request failed with status code: {responseMsg.StatusCode}");
+            }
         }
 
-        public async Task<T> PostFormData<T>(string url, Dictionary<string, string> formData)
+        public async Task<T> PostAsync<T>(string url, Dictionary<string, string> formData)
         {
-                HttpContent content = new FormUrlEncodedContent(formData);
-                HttpResponseMessage responseMsg = await _httpClient.PostAsync(url, content);
+            HttpContent content = new FormUrlEncodedContent(formData);
+            HttpResponseMessage responseMsg = await _httpClient.PostAsync(url, content);
+            if (responseMsg.IsSuccessStatusCode)
+            {
                 responseMsg.EnsureSuccessStatusCode();
                 string response = await responseMsg.Content.ReadAsStringAsync();
 
                 var result = JsonConvert.DeserializeObject<T>(response);
                 return result;
+            }
+            else
+            {
+                throw new Exception($"Request failed with status code: {responseMsg.StatusCode}");
+            }
         }
     }
 }
