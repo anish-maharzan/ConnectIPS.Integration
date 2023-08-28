@@ -107,9 +107,6 @@
     <Compile Include="Helpers\GlobalVariables.cs" />
     <Compile Include="Helpers\Menu.cs" />
     <Compile Include="Helpers\SAPColumn.cs" />
-    <Compile Include="Log\Logger.cs" />
-    <Compile Include="Log\LogHelper.cs" />
-    <Compile Include="Log\Matrix.cs" />
     <Compile Include="Forms\SAP\Payment Means.b1f.cs">
       <DependentUpon>Payment Means.b1f</DependentUpon>
     </Compile>

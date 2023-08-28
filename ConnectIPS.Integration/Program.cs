@@ -60,17 +60,17 @@ namespace ConnectIPS.Integration
             Rec.DoQuery(query);
             if (Rec.RecordCount > 0)
             {
-                DynamicQRCredential.QrBasicAuth = new BasicAuthentication()
-                {
-                    Username = Rec.Fields.Item(0).Value.ToString(),
-                    Password = Rec.Fields.Item(1).Value.ToString()
-                };
-
                 DynamicQRCredential.QrUserAuth = new UserAuthentication()
                 {
-                    username = Rec.Fields.Item(2).Value.ToString(),
-                    password = Rec.Fields.Item(3).Value.ToString(),
+                    username = Rec.Fields.Item(0).Value.ToString(),
+                    password = Rec.Fields.Item(1).Value.ToString(),
                     grant_type = "password"
+                };
+
+                DynamicQRCredential.QrBasicAuth = new BasicAuthentication()
+                {
+                    Username = Rec.Fields.Item(2).Value.ToString(),
+                    Password = Rec.Fields.Item(3).Value.ToString()
                 };
 
                 DynamicQRCredential.MerchantCode = Rec.Fields.Item(4).Value.ToString();
