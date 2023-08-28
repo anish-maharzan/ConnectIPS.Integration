@@ -1,5 +1,4 @@
 ﻿using Newtonsoft.Json;
-using System;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -28,22 +27,14 @@ namespace NepalPay.Library.Helpers
 
         public async Task<string> GetAsync(string url)
         {
-            try
-            {
+            
                 HttpResponseMessage response = await _httpClient.GetAsync(url);
                 response.EnsureSuccessStatusCode();
                 return await response.Content.ReadAsStringAsync();
-            }
-            catch (HttpRequestException ex)
-            {
-                var error = $"Error occurred while making GET request: {ex.Message}";
-                throw new Exception(error);
-            }
         }
 
         public async Task<T> PostAsync<T>(string url, string requestBody)
         {
-           
                 HttpContent content = new StringContent(requestBody, System.Text.Encoding.UTF8, "application/json");
                 HttpResponseMessage responseMsg = await _httpClient.PostAsync(url, content);
                 responseMsg.EnsureSuccessStatusCode();
@@ -55,7 +46,6 @@ namespace NepalPay.Library.Helpers
 
         public async Task<string> Post(string url, string requestBody)
         {
-           
                 HttpContent content = new StringContent(requestBody, System.Text.Encoding.UTF8, "application/json");
                 HttpResponseMessage responseMsg = await _httpClient.PostAsync(url, content);
                 responseMsg.EnsureSuccessStatusCode();
@@ -65,7 +55,6 @@ namespace NepalPay.Library.Helpers
 
         public async Task<T> PostFormData<T>(string url, Dictionary<string, string> formData)
         {
-            
                 HttpContent content = new FormUrlEncodedContent(formData);
                 HttpResponseMessage responseMsg = await _httpClient.PostAsync(url, content);
                 responseMsg.EnsureSuccessStatusCode();

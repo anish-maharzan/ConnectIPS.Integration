@@ -29,20 +29,22 @@ namespace ConnectIPS.Integration.Helpers
                 B1Helper.AddField("NCHLQR", "NCHL QR", "OINV", BoFieldTypes.db_Alpha, 1, BoYesNoEnum.tYES, BoFldSubTypes.st_None, false, "N", srt);
                 B1Helper.AddField("NCHLSTATUS", "NCHL Status", "OINV", BoFieldTypes.db_Alpha, 1, BoYesNoEnum.tYES, BoFldSubTypes.st_None, false, "N", srt);
                 B1Helper.AddField("NCHLTRACEID", "NCHL ValidationTraceId", "OINV", BoFieldTypes.db_Alpha, 20, BoYesNoEnum.tNO, BoFldSubTypes.st_None, false);
+                B1Helper.AddField("QRAMT", "NCHL QR Payment Amount", "OINV", BoFieldTypes.db_Float, 7, BoYesNoEnum.tNO, BoFldSubTypes.st_Price, false);
+                B1Helper.AddField("CASHAMT", "Cash Payment Amount", "OINV", BoFieldTypes.db_Float, 7, BoYesNoEnum.tNO, BoFldSubTypes.st_Price, false);
 
-                B1Helper.AddTable("NCHLQR", "NepalPay-QR Configuration", BoUTBTableType.bott_NoObjectAutoIncrement);
-                B1Helper.AddField("UA_USERNAME", "User Auth Username", "NCHLQR", BoFieldTypes.db_Alpha, 20, BoYesNoEnum.tNO, BoFldSubTypes.st_None, false, "");
-                B1Helper.AddField("UA_PASSWORD", "User Auth Password", "NCHLQR", BoFieldTypes.db_Alpha, 20, BoYesNoEnum.tNO, BoFldSubTypes.st_None, false, "");
-                B1Helper.AddField("BA_USERNAME", "Basic Auth Username", "NCHLQR", BoFieldTypes.db_Alpha, 20, BoYesNoEnum.tNO, BoFldSubTypes.st_None, false, "");
-                B1Helper.AddField("BA_PASSWORD", "Basic Auth Password", "NCHLQR", BoFieldTypes.db_Alpha, 20, BoYesNoEnum.tNO, BoFldSubTypes.st_None, false, "");
-                
-                B1Helper.AddField("MERCHANTCODE", "MerchantCode", "NCHLQR", BoFieldTypes.db_Alpha, 20, BoYesNoEnum.tNO, BoFldSubTypes.st_None, false, "");
-                B1Helper.AddField("CATEGORYCODE", "MerchantCategoryCode", "NCHLQR", BoFieldTypes.db_Numeric, 4, BoYesNoEnum.tNO, BoFldSubTypes.st_None, false, "");
-                B1Helper.AddField("MERCHANTNAME", "MerchantName", "NCHLQR", BoFieldTypes.db_Alpha, 25, BoYesNoEnum.tNO, BoFldSubTypes.st_None, false, "");
-                B1Helper.AddField("ACQUIRERID", "AcquirerId", "NCHLQR", BoFieldTypes.db_Alpha, 20, BoYesNoEnum.tNO, BoFldSubTypes.st_None, false, "");
-                
-                B1Helper.AddField("FILENAME", "Filename", "NCHLQR", BoFieldTypes.db_Alpha, 254, BoYesNoEnum.tNO, BoFldSubTypes.st_None, false, "");
-                B1Helper.AddField("BASEURL", "Base Url", "NCHLQR", BoFieldTypes.db_Alpha, 254, BoYesNoEnum.tNO, BoFldSubTypes.st_None, false, "");
+                B1Helper.AddTable("NCHL_QR", "NepalPay-QR Configuration", BoUTBTableType.bott_NoObjectAutoIncrement);
+                B1Helper.AddField("UA_USERNAME", "User Auth Username", "NCHL_QR", BoFieldTypes.db_Alpha, 20, BoYesNoEnum.tNO, BoFldSubTypes.st_None, false, "");
+                B1Helper.AddField("UA_PASSWORD", "User Auth Password", "NCHL_QR", BoFieldTypes.db_Alpha, 20, BoYesNoEnum.tNO, BoFldSubTypes.st_None, false, "");
+                B1Helper.AddField("BA_USERNAME", "Basic Auth Username", "NCHL_QR", BoFieldTypes.db_Alpha, 20, BoYesNoEnum.tNO, BoFldSubTypes.st_None, false, "");
+                B1Helper.AddField("BA_PASSWORD", "Basic Auth Password", "NCHL_QR", BoFieldTypes.db_Alpha, 20, BoYesNoEnum.tNO, BoFldSubTypes.st_None, false, "");
+
+                B1Helper.AddField("MERCHANTCODE", "MerchantCode", "NCHL_QR", BoFieldTypes.db_Alpha, 20, BoYesNoEnum.tNO, BoFldSubTypes.st_None, false, "");
+                B1Helper.AddField("CATEGORYCODE", "MerchantCategoryCode", "NCHL_QR", BoFieldTypes.db_Numeric, 4, BoYesNoEnum.tNO, BoFldSubTypes.st_None, false, "");
+                B1Helper.AddField("MERCHANTNAME", "MerchantName", "NCHL_QR", BoFieldTypes.db_Alpha, 25, BoYesNoEnum.tNO, BoFldSubTypes.st_None, false, "");
+                B1Helper.AddField("ACQUIRERID", "AcquirerId", "NCHL_QR", BoFieldTypes.db_Alpha, 20, BoYesNoEnum.tNO, BoFldSubTypes.st_None, false, "");
+
+                B1Helper.AddField("FILEPATH", "NPI File Path", "NCHL_QR", BoFieldTypes.db_Alpha, 254, BoYesNoEnum.tNO, BoFldSubTypes.st_None, false, "");
+                B1Helper.AddField("BASEURL", "NCHL Base Url", "NCHL_QR", BoFieldTypes.db_Alpha, 254, BoYesNoEnum.tNO, BoFldSubTypes.st_None, false, "");
 
                 return UDOAdded;
             }

@@ -55,7 +55,7 @@ namespace ConnectIPS.Integration
 
         private static void InitializeNCHL()
         {
-            string query = $@"SELECT TOP 1 T0.""U_UA_USERNAME"", T0.""U_UA_PASSWORD"", T0.""U_BA_USERNAME"", T0.""U_BA_PASSWORD"",T0.""U_MERCHANTCODE"", T0.""U_CATEGORYCODE"", T0.""U_MERCHANTNAME"", T0.""U_ACQUIRERID"" FROM ""@NCHLQR"", ""U_FILENAME"" T0";
+            string query = $@"SELECT TOP 1 T0.""U_UA_USERNAME"", T0.""U_UA_PASSWORD"", T0.""U_BA_USERNAME"", T0.""U_BA_PASSWORD"",T0.""U_MERCHANTCODE"", T0.""U_CATEGORYCODE"", T0.""U_MERCHANTNAME"", T0.""U_ACQUIRERID"", ""U_FILEPATH"", ""U_BASEURL"" FROM ""@NCHL_QR"" T0";
             Recordset Rec = (Recordset)B1Helper.DiCompany.GetBusinessObject(BoObjectTypes.BoRecordset);
             Rec.DoQuery(query);
             if (Rec.RecordCount > 0)
