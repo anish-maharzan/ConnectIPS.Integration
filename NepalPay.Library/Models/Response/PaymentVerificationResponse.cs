@@ -16,7 +16,7 @@ namespace NepalPay.Library.Models.Response
 
     public class ResponseBody
     {
-        public string SessionSrlNo { get; set; }
+        public string sessionSrlNo { get; set; }
         public DateTime recDate { get; set; }
         public string instructionId { get; set; }
         public string nQrTxnId { get; set; }
@@ -25,7 +25,7 @@ namespace NepalPay.Library.Models.Response
         public string network { get; set; }
         public string issuerNetwork { get; set; }
         public double amount { get; set; }
-        public int interchangeFee { get; set; }
+        public double interchangeFee { get; set; }
         public double transactionFee { get; set; }
         public string debitStatus { get; set; }
         public string creditStatus { get; set; }
