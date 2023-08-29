@@ -114,27 +114,8 @@
     <Compile Include="Log\Logger.cs" />
     <Compile Include="Log\LogHelper.cs" />
     <Compile Include="Log\Matrix.cs" />
-    <Compile Include="Models\ConnectIps\Account\ValidateBankAccount.cs" />
-    <Compile Include="Models\ConnectIps\Account\ValidateBankAccountResponse.cs" />
-    <Compile Include="Models\ConnectIps\BasicAuthentication.cs" />
-    <Compile Include="Models\ConnectIps\Credential.cs" />
-    <Compile Include="Models\ConnectIps\NonRealTimeTransaction.cs" />
-    <Compile Include="Models\ConnectIps\PaymentVerification.cs" />
-    <Compile Include="Models\ConnectIps\QRGeneration.cs" />
-    <Compile Include="Models\ConnectIps\Response\CipsBatchResponseModel.cs" />
-    <Compile Include="Models\ConnectIps\RealTimeTransaction.cs" />
-    <Compile Include="Models\ConnectIps\Response\PaymentVerificationResponse.cs" />
-    <Compile Include="Models\ConnectIps\Response\QRGenerationResponse.cs" />
-    <Compile Include="Models\ConnectIps\Response\ReponseCode.cs" />
-    <Compile Include="Models\ConnectIps\Response\TokenResponse.cs" />
-    <Compile Include="Models\ConnectIps\BankAccountDetail.cs" />
-    <Compile Include="Models\ConnectIps\UserAuthentication.cs" />
-    <Compile Include="Models\ConnectIps\Interface\IResponse.cs" />
-    <Compile Include="Models\SAP\IncomingPayment.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Services\ConnectIps\ConnectIpsService.cs" />
-    <Compile Include="Services\SAP\IncomingPaymentService.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config">
@@ -174,6 +155,10 @@
     <ProjectReference Include="..\MainLibrary\MainLibrary.csproj">
       <Project>{3dc8b10b-d57e-46ea-8e09-c94c6ee89169}</Project>
       <Name>MainLibrary</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\NepalPay.Library\NepalPay.Library.csproj">
+      <Project>{5e8321d4-bc02-485e-9adc-88f41415fd52}</Project>
+      <Name>NepalPay.Library</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

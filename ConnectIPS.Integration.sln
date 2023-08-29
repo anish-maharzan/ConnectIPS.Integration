@@ -1,11 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.28307.1340
+# Visual Studio Version 17
+VisualStudioVersion = 17.6.33815.320
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConnectIPS.Integration", "ConnectIPS.Integration\ConnectIPS.Integration.csproj", "{6354D8B0-6D7E-4319-98D3-F677CCF61FA7}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MainLibrary", "MainLibrary\MainLibrary.csproj", "{3DC8B10B-D57E-46EA-8E09-C94C6EE89169}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NepalPay.Library", "NepalPay.Library\NepalPay.Library.csproj", "{5E8321D4-BC02-485E-9ADC-88F41415FD52}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{3DC8B10B-D57E-46EA-8E09-C94C6EE89169}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3DC8B10B-D57E-46EA-8E09-C94C6EE89169}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3DC8B10B-D57E-46EA-8E09-C94C6EE89169}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5E8321D4-BC02-485E-9ADC-88F41415FD52}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5E8321D4-BC02-485E-9ADC-88F41415FD52}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5E8321D4-BC02-485E-9ADC-88F41415FD52}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5E8321D4-BC02-485E-9ADC-88F41415FD52}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
