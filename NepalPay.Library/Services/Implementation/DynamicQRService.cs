@@ -20,9 +20,9 @@ namespace NepalPay.Library.Services.Implementation
 
         public DynamicQRService()
         {
-            httpHelper = new HttpHelper("https://devopennpi.connectips.com");
+            httpHelper = new HttpHelper(DynamicQRCredential.BaseUrl);
         }
-        
+
         public async Task<QRGenerationResponse> GenerateQRAsync(QRGeneration request)
         {
             var qrToken = await GetQRTokenAsync();
@@ -81,8 +81,7 @@ namespace NepalPay.Library.Services.Implementation
         private string GetNepalPayToken(QRGeneration request)
         {
             string tokenString = GetTokenString(request);
-
-            var token = TokenService.GenerateNCHLToken(tokenString);
+            var token = TokenService.GenerateNCHLToken(tokenString, DynamicQRCredential.PFXPassword);
             return token;
         }
 
