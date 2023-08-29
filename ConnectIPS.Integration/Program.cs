@@ -43,7 +43,7 @@ namespace ConnectIPS.Integration
                 }
                 InitializeNCHL();
                 var applicationHandler = new ApplicationHandlers();
-                var addonName = "Nepal QR Integration";
+                var addonName = "NEPALPAY QR Integration";
                 Application.SBO_Application.StatusBar.SetSystemMessage($"{addonName} Add-on installed successfully.", SAPbouiCOM.BoMessageTime.bmt_Short, SAPbouiCOM.BoStatusBarMessageType.smt_Success);
                 oApp.Run();
             }
@@ -55,7 +55,7 @@ namespace ConnectIPS.Integration
 
         private static void InitializeNCHL()
         {
-            string query = $@"SELECT TOP 1 T0.""U_UA_USERNAME"", T0.""U_UA_PASSWORD"", T0.""U_BA_USERNAME"", T0.""U_BA_PASSWORD"",T0.""U_MERCHANTCODE"", T0.""U_CATEGORYCODE"", T0.""U_MERCHANTNAME"", T0.""U_ACQUIRERID"", ""U_FILEPATH"", ""U_BASEURL"" FROM ""@NCHL_QR"" T0";
+            string query = $@"SELECT TOP 1 T0.""U_UA_USERNAME"", T0.""U_UA_PASSWORD"", T0.""U_BA_USERNAME"", T0.""U_BA_PASSWORD"",T0.""U_MERCHANTCODE"", T0.""U_CATEGORYCODE"", T0.""U_MERCHANTNAME"", T0.""U_ACQUIRERID"", ""U_FILEPATH"", ""U_BASEURL"", ""U_ENV"", ""U_PFXPWD"" FROM ""@NCHL_CONFIG"" T0 WHERE T0.""Name"" = 'QR' AND T0.""U_ISENABLE"" = 'True'";
             Recordset Rec = (Recordset)B1Helper.DiCompany.GetBusinessObject(BoObjectTypes.BoRecordset);
             Rec.DoQuery(query);
             if (Rec.RecordCount > 0)
@@ -79,12 +79,13 @@ namespace ConnectIPS.Integration
                 DynamicQRCredential.AcquirerId = Rec.Fields.Item(7).Value.ToString();
                 DynamicQRCredential.FileName = Rec.Fields.Item(8).Value.ToString();
                 DynamicQRCredential.BaseUrl = Rec.Fields.Item(9).Value.ToString();
+                DynamicQRCredential.Environment = Rec.Fields.Item(10).Value.ToString();
+                DynamicQRCredential.PFXPassword = Rec.Fields.Item(11).Value.ToString();
             }
             else
             {
                 Program.SBO_Application.StatusBar.SetText("NCHL Configuration is missing!", SAPbouiCOM.BoMessageTime.bmt_Medium, SAPbouiCOM.BoStatusBarMessageType.smt_Error);
             }
         }
-
     }
 }
