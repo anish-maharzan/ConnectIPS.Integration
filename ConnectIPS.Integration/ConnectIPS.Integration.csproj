@@ -91,25 +91,15 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Forms\Incoming\A_R Invoice.b1f.cs">
-      <DependentUpon>A_R Invoice.b1f</DependentUpon>
-    </Compile>
-    <Compile Include="Forms\Incoming\QRAmountConfirmation.b1f.cs">
-      <DependentUpon>QRAmountConfirmation.b1f</DependentUpon>
-    </Compile>
-    <Compile Include="Forms\Incoming\QRCodeScan.b1f.cs">
-      <DependentUpon>QRCodeScan.b1f</DependentUpon>
-    </Compile>
-    <Compile Include="Forms\Outgoing\Outgoing Payments.b1f.cs">
+    <Compile Include="Forms\SAP\Outgoing Payments.b1f.cs">
       <DependentUpon>Outgoing Payments.b1f</DependentUpon>
     </Compile>
-    <Compile Include="Forms\Outgoing\TransactionConfimation.b1f.cs">
+    <Compile Include="Forms\Users\TransactionConfimation.b1f.cs">
       <DependentUpon>TransactionConfimation.b1f</DependentUpon>
     </Compile>
-    <Compile Include="Forms\Reporting\TransactionReport.b1f.cs" >
-	  <DependentUpon>TransactionReport.b1f</DependentUpon>
-	</Compile>
-    <Compile Include="Helpers\AppConfig.cs" />
+    <Compile Include="Forms\Users\TransactionReport.b1f.cs">
+      <DependentUpon>TransactionReport.b1f</DependentUpon>
+    </Compile>
     <Compile Include="Helpers\GlobalMethods_Variables.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -150,34 +140,19 @@
     <None Include="app.config">
       <SubType>Designer</SubType>
     </None>
-    <EmbeddedResource Include="Files\NPI.pfx">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <None Include="Forms\Incoming\A_R Invoice.b1f">
-      <FormCategory>SystemForm</FormCategory>
-    </None>
-    <None Include="Forms\Incoming\A_R Invoice.b1f__orig_srf">
-      <DependentUpon>A_R Invoice.b1f</DependentUpon>
-    </None>
-    <None Include="Forms\Incoming\QRAmountConfirmation.b1f">
-      <FormCategory>UserForm</FormCategory>
-    </None>
-    <None Include="Forms\Incoming\QRCodeScan.b1f">
-      <FormCategory>UserForm</FormCategory>
-    </None>
-    <None Include="Forms\Outgoing\Outgoing Payments.b1f">
+    <None Include="Forms\SAP\Outgoing Payments.b1f">
       <FormCategory>SystemForm</FormCategory>
       <SubType>Designer</SubType>
     </None>
-    <None Include="Forms\Outgoing\Outgoing Payments.b1f__orig_srf">
+    <None Include="Forms\SAP\Outgoing Payments.b1f__orig_srf">
       <DependentUpon>Outgoing Payments.b1f</DependentUpon>
     </None>
-    <None Include="Forms\Outgoing\TransactionConfimation.b1f">
+    <None Include="Forms\Users\TransactionConfimation.b1f">
       <FormCategory>UserForm</FormCategory>
     </None>
-    <None Include="Forms\Reporting\TransactionReport.b1f" >
-	  <FormCategory>UserForm</FormCategory>
-	</None>
+    <None Include="Forms\Users\TransactionReport.b1f">
+      <FormCategory>UserForm</FormCategory>
+    </None>
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>

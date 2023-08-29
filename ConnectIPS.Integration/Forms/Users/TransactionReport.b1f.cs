@@ -1,8 +1,8 @@
 ﻿using SAPbouiCOM.Framework;
 
-namespace ConnectIPS.Integration.Forms.Reporting
+namespace ConnectIPS.Integration.Forms.Users
 {
-    [FormAttribute("ConnectIPS.Integration.Forms.Reporting.TransactionReport", "Forms/Reporting/TransactionReport.b1f")]
+    [FormAttribute("ConnectIPS.Integration.Forms.Users.TransactionReport", "Forms/Users/TransactionReport.b1f")]
     class TransactionReport : UserFormBase
     {
         public TransactionReport()

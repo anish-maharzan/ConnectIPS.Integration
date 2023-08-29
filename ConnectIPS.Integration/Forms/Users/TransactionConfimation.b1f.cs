@@ -1,9 +1,9 @@
 ﻿using SAPbouiCOM.Framework;
 using System;
 
-namespace ConnectIPS.Integration.Forms.Outgoing
+namespace ConnectIPS.Integration.Forms.Users
 {
-    [FormAttribute("ConnectIPS.Integration.Forms.Outgoing.TransactionConfimation", "Forms/Outgoing/TransactionConfimation.b1f")]
+    [FormAttribute("ConnectIPS.Integration.Forms.Users.TransactionConfimation", "Forms/Users/TransactionConfimation.b1f")]
     class TransactionConfimation : UserFormBase
     {
         public TransactionConfimation()
