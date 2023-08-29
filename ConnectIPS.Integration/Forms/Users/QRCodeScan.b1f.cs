@@ -127,7 +127,7 @@ namespace ConnectIPS.Integration.Forms.Users
                     paymentButton.Item.Click();
 
                     var respnse = (PaymentVerificationSuccessResponse)response;
-                    Program.SBO_Application.StatusBar.SetText("NepalPay QR Payment is successful.", SAPbouiCOM.BoMessageTime.bmt_Medium, SAPbouiCOM.BoStatusBarMessageType.smt_Success);
+                    Program.SBO_Application.StatusBar.SetText("NEPALPAY QR Payment successful.", SAPbouiCOM.BoMessageTime.bmt_Medium, SAPbouiCOM.BoStatusBarMessageType.smt_Success);
                     BtnCancel.Item.Click();
                 }
                 else
