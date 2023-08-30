@@ -1,6 +1,5 @@
 ﻿using NepalPay.Library.Credentials;
 using NepalPay.Library.Helpers;
-using NepalPay.Library.Models.Abstraction;
 using NepalPay.Library.Models.QR;
 using NepalPay.Library.Models.Response;
 using NepalPay.Library.Models.Transaction;
@@ -14,11 +13,11 @@ using System.Threading.Tasks;
 
 namespace NepalPay.Library.Services.Implementation
 {
-    public class DynamicQRService : IDynamicQRService
+    public class QRService : IDynamicQRService
     {
         private readonly HttpHelper httpHelper;
 
-        public DynamicQRService()
+        public QRService()
         {
             httpHelper = new HttpHelper("http://demo.connectips.com");
         }
@@ -64,15 +63,15 @@ namespace NepalPay.Library.Services.Implementation
 
             var formData = new Dictionary<string, string>();
 
-            PropertyInfo[] properties = DynamicQRCredential.QrUserAuth.GetType().GetProperties();
+            PropertyInfo[] properties = QRCredential.UserAuth.GetType().GetProperties();
             foreach (PropertyInfo property in properties)
             {
                 string propertyName = property.Name;
-                string propertyValue = property.GetValue(DynamicQRCredential.QrUserAuth).ToString();
+                string propertyValue = property.GetValue(QRCredential.UserAuth).ToString();
                 formData.Add(propertyName, propertyValue);
             }
 
-            string credentials = Convert.ToBase64String(Encoding.ASCII.GetBytes($"{DynamicQRCredential.QrBasicAuth.Username}:{DynamicQRCredential.QrBasicAuth.Password}"));
+            string credentials = Convert.ToBase64String(Encoding.ASCII.GetBytes($"{QRCredential.BasicAuth.Username}:{QRCredential.BasicAuth.Password}"));
             httpHelper.AddBasicAuthHeader(credentials);
             var response = await httpHelper.PostAsync<TokenResponse>(postUrl, formData);
             return response;
@@ -81,13 +80,13 @@ namespace NepalPay.Library.Services.Implementation
         private string GetNepalPayToken(QRGeneration request)
         {
             string tokenString = GetTokenString(request);
-            var token = TokenService.GenerateNCHLToken(tokenString, DynamicQRCredential.PFXPassword);
+            var token = TokenService.GenerateNCHLToken(tokenString, QRCredential.PFXPassword, QRCredential.PFXPassword);
             return token;
         }
 
         private string GetTokenString(QRGeneration request)
         {
-            string token = request.acquirerId + "," + request.merchantId + "," + request.merchantCategoryCode + "," + request.transactionCurrency + "," + request.transactionAmount + "," + request.billNumber + "," + DynamicQRCredential.QrUserAuth.username;
+            string token = request.acquirerId + "," + request.merchantId + "," + request.merchantCategoryCode + "," + request.transactionCurrency + "," + request.transactionAmount + "," + request.billNumber + "," + QRCredential.UserAuth.username;
             return token;
         }
     }

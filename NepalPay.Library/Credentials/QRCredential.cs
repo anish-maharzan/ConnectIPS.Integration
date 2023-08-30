@@ -2,10 +2,10 @@
 
 namespace NepalPay.Library.Credentials
 {
-    public static class DynamicQRCredential
+    public static class QRCredential
     {
-        public static BasicAuthentication QrBasicAuth;
-        public static UserAuthentication QrUserAuth;
+        public static BasicAuthentication BasicAuth;
+        public static UserAuthentication UserAuth;
         public static string MerchantCode;
         public static int MerchantCategoryCode;
         public static string MerchantName;

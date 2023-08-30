@@ -19,7 +19,7 @@ namespace NepalPay.Library.Services.Implementation
         {
             string accessToken = await AuthService.GetAccessTokenAsync();
 
-            string url = "http://demo.connectips.com:6065/api/validatebankaccount";
+            string url = ":6065/api/validatebankaccount";
             string requestBody = JsonConvert.SerializeObject(bankAccount);
             httpHelper.AddBearerToken(accessToken);
             var response = await httpHelper.PostAsync<ValidateBankAccountResponse>(url, requestBody);

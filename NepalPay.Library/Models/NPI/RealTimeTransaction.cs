@@ -24,12 +24,6 @@ namespace NepalPay.Library.Models.Transaction
         {
             batchCount = "1";
             batchCrncy = "NPR";
-            //debtorIdType = "";
-            //debtorIdValue = "";
-            //debtorAddress = "";
-            //debtorPhone = "";
-            //debtorMobile = "";
-            //debtorEmail = "";
         }
     }
 
@@ -53,19 +47,6 @@ namespace NepalPay.Library.Models.Transaction
         public string addenda3 { get; set; }
         public string addenda4 { get; set; }
 
-        public CIpsTransactionDetail()
-        {
-            //creditorIdType = "";
-            //creditorIdValue = "";
-            //creditorAddress = "";
-            //creditorPhone = "";
-            //creditorMobile = "";
-            //creditorEmail = "";
-            //addenda1 = "";
-            //addenda2 = "";
-            //addenda3 = "";
-            //addenda4 = "";
-        }
     }
 
     public class RealTimeTransaction

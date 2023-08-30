@@ -8,11 +8,11 @@ namespace NepalPay.Library.Services.Implementation
 {
     public static class TokenService
     {
-        public static string GenerateNCHLToken(string stringToHash, string pfxPassword = "123")
+        public static string GenerateNCHLToken(string FileName, string stringToHash, string pfxPassword)
         {
 
             using (var crypt = new SHA256Managed())
-            using (var cert = new X509Certificate2(DynamicQRCredential.FileName, pfxPassword, X509KeyStorageFlags.Exportable))
+            using (var cert = new X509Certificate2(FileName, pfxPassword, X509KeyStorageFlags.Exportable))
             {
                 byte[] data = Encoding.UTF8.GetBytes(stringToHash);
 

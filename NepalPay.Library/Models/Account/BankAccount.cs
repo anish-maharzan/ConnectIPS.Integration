@@ -1,6 +1,6 @@
 ﻿namespace NepalPay.Library.Models.Account
 {
-    public class BankAccountDetail
+    public class BankAccount
     {
         public string AccountName { get; set; }
         public string AccountNo { get; set; }

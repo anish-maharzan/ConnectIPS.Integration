@@ -8,10 +8,10 @@ namespace NepalPay.Library.Models.QR
         public QRGeneration()
         {
             pointOfInitialization = 12;
-            acquirerId = DynamicQRCredential.AcquirerId;
-            merchantId = DynamicQRCredential.MerchantCode;
-            merchantName = DynamicQRCredential.MerchantName;
-            merchantCategoryCode = Convert.ToInt32(DynamicQRCredential.MerchantCategoryCode);
+            acquirerId = QRCredential.AcquirerId;
+            merchantId = QRCredential.MerchantCode;
+            merchantName = QRCredential.MerchantName;
+            merchantCategoryCode = Convert.ToInt32(QRCredential.MerchantCategoryCode);
             merchantCountry = "NP";
             merchantCity = "Kathmandu";
             merchantPostalCode = "4600";

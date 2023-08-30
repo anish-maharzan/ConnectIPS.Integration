@@ -37,7 +37,7 @@ namespace NepalPay.Library.Services.Implementation
             var formData = objFormData.GetType()
                 .GetProperties()
                 .ToDictionary(property => property.Name, property => property.GetValue(objFormData).ToString());
-            string credentials = Convert.ToBase64String(Encoding.ASCII.GetBytes($"{TransactionCredential.TBasicAuth.Username}:{TransactionCredential.TBasicAuth.Password}"));
+            string credentials = Convert.ToBase64String(Encoding.ASCII.GetBytes($"{NPICredential.BasicAuth.Username}:{NPICredential.BasicAuth.Password}"));
             httpHelper.AddBasicAuthHeader(credentials);
             var response = await httpHelper.PostAsync<TokenResponse>(postUrl, formData);
             return response;
@@ -49,14 +49,14 @@ namespace NepalPay.Library.Services.Implementation
 
             var formData = new Dictionary<string, string>();
 
-            PropertyInfo[] properties = TransactionCredential.TUserAuth.GetType().GetProperties();
+            PropertyInfo[] properties = NPICredential.UserAuth.GetType().GetProperties();
             foreach (PropertyInfo property in properties)
             {
                 string propertyName = property.Name;
-                string propertyValue = property.GetValue(TransactionCredential.TUserAuth).ToString();
+                string propertyValue = property.GetValue(NPICredential.UserAuth).ToString();
                 formData.Add(propertyName, propertyValue);
             }
-            string credentials = Convert.ToBase64String(Encoding.ASCII.GetBytes($"{TransactionCredential.TBasicAuth.Username}:{TransactionCredential.TBasicAuth.Password}"));
+            string credentials = Convert.ToBase64String(Encoding.ASCII.GetBytes($"{NPICredential.BasicAuth.Username}:{NPICredential.BasicAuth.Password}"));
             httpHelper.AddBasicAuthHeader(credentials);
             var response = await httpHelper.PostAsync<TokenResponse>(postUrl, formData);
             return response;

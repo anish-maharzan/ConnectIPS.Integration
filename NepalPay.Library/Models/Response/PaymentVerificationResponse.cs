@@ -1,9 +1,15 @@
-﻿using NepalPay.Library.Models.Abstraction;
-using System;
+﻿using System;
 using System.Collections.Generic;
 
 namespace NepalPay.Library.Models.Response
 {
+    public interface IResponse
+    {
+        string responseCode { get; set; }
+        //string responseStatus { get; set; }
+        string responseMessage { get; set; }
+    }
+
     public class PaymentVerificationErrorResponse: IResponse
     {
         public string responseCode { get; set; }
