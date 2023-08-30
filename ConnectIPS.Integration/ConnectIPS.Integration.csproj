@@ -106,9 +106,9 @@
     <Compile Include="Forms\Outgoing\TransactionConfimation.b1f.cs">
       <DependentUpon>TransactionConfimation.b1f</DependentUpon>
     </Compile>
-    <Compile Include="Forms\Reporting\TransactionReport.b1f.cs" >
-	  <DependentUpon>TransactionReport.b1f</DependentUpon>
-	</Compile>
+    <Compile Include="Forms\Reporting\TransactionReport.b1f.cs">
+      <DependentUpon>TransactionReport.b1f</DependentUpon>
+    </Compile>
     <Compile Include="Helpers\AppConfig.cs" />
     <Compile Include="Helpers\GlobalMethods_Variables.cs">
       <SubType>Code</SubType>
@@ -121,9 +121,6 @@
     <Compile Include="Helpers\HttpHelper.cs" />
     <Compile Include="Helpers\Menu.cs" />
     <Compile Include="Helpers\SAPColumn.cs" />
-    <Compile Include="Log\Logger.cs" />
-    <Compile Include="Log\LogHelper.cs" />
-    <Compile Include="Log\Matrix.cs" />
     <Compile Include="Models\ConnectIps\Account\ValidateBankAccount.cs" />
     <Compile Include="Models\ConnectIps\Account\ValidateBankAccountResponse.cs" />
     <Compile Include="Models\ConnectIps\BasicAuthentication.cs" />
@@ -175,9 +172,9 @@
     <None Include="Forms\Outgoing\TransactionConfimation.b1f">
       <FormCategory>UserForm</FormCategory>
     </None>
-    <None Include="Forms\Reporting\TransactionReport.b1f" >
-	  <FormCategory>UserForm</FormCategory>
-	</None>
+    <None Include="Forms\Reporting\TransactionReport.b1f">
+      <FormCategory>UserForm</FormCategory>
+    </None>
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>
