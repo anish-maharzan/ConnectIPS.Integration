@@ -3,7 +3,6 @@ using NepalPay.Library.Helpers;
 using NepalPay.Library.Models.Response;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,40 +11,15 @@ namespace NepalPay.Library.Services.Implementation
 {
     public static class AuthService
     {
-        private static readonly HttpHelper httpHelper;
-        static AuthService()
-        {
-            httpHelper = new HttpHelper("http://demo.connectips.com");
-        }
-
-        public static async Task<string> GetAccessTokenAsync()
-        {
-            var refreshToken = await GetRefreshTokenAsync();
-            var accessToken = await GetAccessTokenAsync(refreshToken.refresh_token);
-            return accessToken.access_token;
-        }
-
-        public static async Task<TokenResponse> GetAccessTokenAsync(string refreshToken)
-        {
-            string postUrl = ":9095/oauth/token";
-            var objFormData = new
-            {
-                grant_type = "refresh_token",
-                refresh_token = refreshToken
-            };
-
-            var formData = objFormData.GetType()
-                .GetProperties()
-                .ToDictionary(property => property.Name, property => property.GetValue(objFormData).ToString());
-            string credentials = Convert.ToBase64String(Encoding.ASCII.GetBytes($"{NPICredential.BasicAuth.Username}:{NPICredential.BasicAuth.Password}"));
-            httpHelper.AddBasicAuthHeader(credentials);
-            var response = await httpHelper.PostAsync<TokenResponse>(postUrl, formData);
-            return response;
-        }
-
         public static async Task<TokenResponse> GetRefreshTokenAsync()
         {
-            string postUrl = ":6065/oauth/token";
+            HttpHelper httpHelper;
+            if (NPICredential.Environment == "Test")
+                httpHelper = new HttpHelper("http://demo.connectips.com:6065/");
+            else
+                httpHelper = new HttpHelper(NPICredential.BaseUrl);
+
+            string postUrl = "oauth/token";
 
             var formData = new Dictionary<string, string>();
 
@@ -56,6 +30,37 @@ namespace NepalPay.Library.Services.Implementation
                 string propertyValue = property.GetValue(NPICredential.UserAuth).ToString();
                 formData.Add(propertyName, propertyValue);
             }
+            string credentials = Convert.ToBase64String(Encoding.ASCII.GetBytes($"{NPICredential.BasicAuth.Username}:{NPICredential.BasicAuth.Password}"));
+            httpHelper.AddBasicAuthHeader(credentials);
+            var response = await httpHelper.PostAsync<TokenResponse>(postUrl, formData);
+            return response;
+        }
+
+        public static async Task<TokenResponse> GetAccessTokenAsync(string refreshToken)
+        {
+            HttpHelper httpHelper;
+            if (NPICredential.Environment == "Test")
+                httpHelper = new HttpHelper("http://demo.connectips.com:9095/");
+            else
+                httpHelper = new HttpHelper(NPICredential.BaseUrl);
+
+            string postUrl = "oauth/token";
+
+            var formData = new Dictionary<string, string>();
+            var objFormData = new
+            {
+                grant_type = "refresh_token",
+                refresh_token = refreshToken
+            };
+
+            PropertyInfo[] properties = objFormData.GetType().GetProperties();
+            foreach (PropertyInfo property in properties)
+            {
+                string propertyName = property.Name;
+                string propertyValue = property.GetValue(objFormData).ToString();
+                formData.Add(propertyName, propertyValue);
+            }
+
             string credentials = Convert.ToBase64String(Encoding.ASCII.GetBytes($"{NPICredential.BasicAuth.Username}:{NPICredential.BasicAuth.Password}"));
             httpHelper.AddBasicAuthHeader(credentials);
             var response = await httpHelper.PostAsync<TokenResponse>(postUrl, formData);

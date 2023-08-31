@@ -19,7 +19,7 @@ namespace NepalPay.Library.Services.Implementation
 
         public QRService()
         {
-            httpHelper = new HttpHelper("http://demo.connectips.com");
+            httpHelper = new HttpHelper(QRCredential.BaseUrl);
         }
 
         public async Task<QRGenerationResponse> GenerateQRAsync(QRGeneration request)

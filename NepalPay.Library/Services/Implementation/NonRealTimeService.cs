@@ -12,8 +12,8 @@ namespace NepalPay.Library.Services.Implementation
     public class NonRealTimeService : INPIService
     {
         private readonly HttpHelper httpHelper;
-        private readonly double maxAmount;
         private readonly NonRealTimeTransaction data;
+        private static readonly double upperLimit = 2000000;
 
         public NonRealTimeService()
         {
@@ -21,18 +21,19 @@ namespace NepalPay.Library.Services.Implementation
 
         public NonRealTimeService(NonRealTimeTransaction request)
         {
-            httpHelper = new HttpHelper("http://demo.connectips.com");
+            httpHelper = new HttpHelper(NPICredential.BaseUrl);
             data = request;
         }
 
-        public async Task<CipsBatchResponseModel> FundTransferAsync()
+        public async Task<CipsBatchResponseModel> SendTransactionAsync()
         {
-            string accessToken = await AuthService.GetAccessTokenAsync();
+            var refreshToken = await AuthService.GetRefreshTokenAsync();
+            var accessToken = await AuthService.GetAccessTokenAsync(refreshToken.refresh_token);
             data.token = GetNepalPayToken(data);
 
-            string url = ":6065/api/postnchlipsbatch";
+            string url = "api/postnchlipsbatch";
             string requestBody = JsonConvert.SerializeObject(data);
-            httpHelper.AddBearerToken(accessToken);
+            httpHelper.AddBearerToken(accessToken.access_token);
             var response = await httpHelper.PostAsync<CipsBatchResponseModel>(url, requestBody);
             return response;
         }
@@ -44,7 +45,7 @@ namespace NepalPay.Library.Services.Implementation
                 message = "Transaction is not permitted in same bank for Non-Real Time";
                 return false;
             }
-            else if (transactionAmt > maxAmount)
+            else if (transactionAmt > upperLimit)
             {
                 message = "Non-Real Time Transaction Amount exceed";
                 return false;
@@ -63,7 +64,7 @@ namespace NepalPay.Library.Services.Implementation
                 chargeAmount = 2;
             else if (transferAmount >= 500 && transferAmount < 50000)
                 chargeAmount = 5;
-            else if (transferAmount >= 50000 && transferAmount < 200000000)
+            else if (transferAmount >= 50000 && transferAmount < upperLimit)
                 chargeAmount = 10;
             return chargeAmount;
         }

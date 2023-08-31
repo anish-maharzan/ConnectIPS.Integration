@@ -71,7 +71,6 @@ namespace NepalPay.Library.Helpers
             HttpResponseMessage responseMsg = await _httpClient.PostAsync(url, content);
             if (responseMsg.IsSuccessStatusCode)
             {
-                responseMsg.EnsureSuccessStatusCode();
                 string response = await responseMsg.Content.ReadAsStringAsync();
 
                 var result = JsonConvert.DeserializeObject<T>(response);

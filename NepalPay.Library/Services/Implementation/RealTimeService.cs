@@ -13,43 +13,43 @@ namespace NepalPay.Library.Services.Implementation
     {
         private readonly HttpHelper httpHelper;
         private readonly RealTimeTransaction _request;
-        private readonly double upperLimitSameBank;
-        private readonly double upperLimit;
+        private static readonly double upperLimitSameBank = 2000000; 
+        private static readonly double upperLimitDiffBank = 10000000;
 
         public RealTimeService()
         {
+            httpHelper = new HttpHelper(NPICredential.BaseUrl);
         }
 
         public RealTimeService(RealTimeTransaction request)
         {
-            httpHelper = new HttpHelper("http://demo.connectips.com");
+            httpHelper = new HttpHelper(NPICredential.BaseUrl);
             _request = request;
-            upperLimit = 2000000;
-            upperLimitSameBank = 10000000;
         }
 
-        public async Task<CipsBatchResponseModel> FundTransferAsync()
+        public async Task<CipsBatchResponseModel> SendTransactionAsync()
         {
-            string accessToken = await AuthService.GetAccessTokenAsync();
+            var refreshToken = await AuthService.GetRefreshTokenAsync();
+            var accessToken = await AuthService.GetAccessTokenAsync(refreshToken.refresh_token);
             _request.token = GetNepalPayToken(_request);
 
-            string url = ":6065/api/postcipsbatch";
+            string url = "api/postcipsbatch";
             string requestBody = JsonConvert.SerializeObject(_request);
-            httpHelper.AddBearerToken(accessToken);
+            httpHelper.AddBearerToken(accessToken.access_token);
             var response = await httpHelper.PostAsync<CipsBatchResponseModel>(url, requestBody);
             return response;
         }
 
         public bool ValidateTransferAmount(double transferAmount, bool isSameBank, out string message)
         {
-            if (isSameBank && transferAmount > 10000000)
+            if (isSameBank && transferAmount > upperLimitSameBank)
             {
                 message = "Real Time Transaction Amount exceed for same bank";
                 return false;
             }
-            else if (transferAmount > 2000000)
+            else if (transferAmount > upperLimitDiffBank)
             {
-                message = "Real Time Transaction Amount exceed";
+                message = "Real Time Transaction Amount exceed for different bank";
                 return false;
             }
             else
@@ -61,8 +61,8 @@ namespace NepalPay.Library.Services.Implementation
 
         public int GetChargeAmount(double transferAmount, bool isSameBank)
         {
+            double upperLimit = isSameBank ? upperLimitSameBank : upperLimitDiffBank;
             int chargeAmount = 0;
-            int upperLimit = 0;
 
             if (transferAmount >= 0.01 && transferAmount < 500)
                 chargeAmount = 2;
@@ -95,6 +95,5 @@ namespace NepalPay.Library.Services.Implementation
             var batchString = $"{BatchId},{DebtorAgent},{DebtorBranch},{DebtorAccount},{BatchAmount},{BatchCurrency}";
             return batchString;
         }
-
     }
 }
