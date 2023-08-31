@@ -1,4 +1,6 @@
 ﻿using ConnectIPS.Integration.Helpers;
+using NepalPay.Library.Credentials;
+using NepalPay.Library.Models.Authentication;
 using SAPbobsCOM;
 using SAPbouiCOM.Framework;
 using System;
@@ -41,8 +43,9 @@ namespace ConnectIPS.Integration
                 {
                     AddonInfoInfo.InstallUDOs();
                 }
+                InitializeNCHL();
                 var applicationHandler = new ApplicationHandlers();
-                var addonName = "NEPALPAY Integration";
+                var addonName = "NCHL-NPI Integration";
                 Application.SBO_Application.StatusBar.SetSystemMessage($"{addonName} Add-on installed successfully.", SAPbouiCOM.BoMessageTime.bmt_Short, SAPbouiCOM.BoStatusBarMessageType.smt_Success);
                 oApp.Run();
             }
@@ -52,232 +55,37 @@ namespace ConnectIPS.Integration
             }
         }
 
-        public static void CreateFMS()
+        private static bool InitializeNCHL()
         {
-            int UserQueryCategoryID = GetUserQueryCategoryID("FMS", true);
-
-            string PreFetchDocEQry = "SELECT \"U_ITN_Stages\" from OITT where \"Code\" =$[$6.0]";
-            int PreFetchDocNQID = CreateUserQuery("Production Order Stages", PreFetchDocEQry, UserQueryCategoryID);
-            AssignQuery(PreFetchDocNQID, "65211", "txtStage", "Stage", false, "Brand");
-        }
-
-        public static int GetUserQueryCategoryID(string categoryName, bool autoCreateCategory = false)
-        {
-            // Create a new User Category if the categoryName specified does not exist
-            // Returns the Internal Key ID of the Category
-            int catid = 0;
-            SAPbobsCOM.Recordset oRecordSet = (SAPbobsCOM.Recordset)Program.oCompany.GetBusinessObject(SAPbobsCOM.BoObjectTypes.BoRecordset);
-            try
+            string query = $@"SELECT TOP 1 T0.""U_UA_USERNAME"", T0.""U_UA_PASSWORD"", T0.""U_BA_USERNAME"", T0.""U_BA_PASSWORD"", ""U_FILEPATH"", ""U_BASEURL"", ""U_ENV"", ""U_PFXPWD"" FROM ""@NCHL_NPI_CONFIG"" T0 WHERE T0.""Name"" = 'NPI' AND T0.""U_ISENABLE"" = 'True'";
+            Recordset Rec = (Recordset)oCompany.GetBusinessObject(BoObjectTypes.BoRecordset);
+            Rec.DoQuery(query);
+            if (Rec.RecordCount > 0)
             {
-                oRecordSet.DoQuery("SELECT \"CategoryId\", \"CatName\" FROM \"OQCN\" WHERE \"CatName\" = '" + categoryName + "'");
-
-                if (!oRecordSet.EoF)
+                NPICredential.UserAuth = new UserAuthentication()
                 {
-                    catid = Convert.ToInt32(oRecordSet.Fields.Item("CategoryId").Value);
-                }
-                else
-                {
-                    if (autoCreateCategory)
-                    {
-                        // Add a New Query Category Called Integratech to the [OQCN] Table
-                        SAPbobsCOM.QueryCategories qc = (SAPbobsCOM.QueryCategories)Program.oCompany.GetBusinessObject(BoObjectTypes.oQueryCategories);
-                        qc.Name = categoryName;
-                        qc.Permissions = "YYYYYYYYYYYYYYY";
-                        if (qc.Add() == 0)
-                        {
-                            return Convert.ToInt32(Program.oCompany.GetNewObjectKey());
-                        }
-                    }
-                    else
-                    {
+                    username = Rec.Fields.Item(0).Value.ToString(),
+                    password = Rec.Fields.Item(1).Value.ToString(),
+                    grant_type = "password"
+                };
 
-                    }
-                }
+                NPICredential.BasicAuth = new BasicAuthentication()
+                {
+                    Username = Rec.Fields.Item(2).Value.ToString(),
+                    Password = Rec.Fields.Item(3).Value.ToString()
+                };
+
+                NPICredential.FileName = Rec.Fields.Item(4).Value.ToString();
+                NPICredential.BaseUrl = Rec.Fields.Item(5).Value.ToString();
+                NPICredential.Environment = Rec.Fields.Item(6).Value.ToString();
+                NPICredential.PFXPassword = Rec.Fields.Item(7).Value.ToString();
             }
-            catch (Exception ex)
-            {
-
-            }
-            finally
-            {
-                // GC Release
-                System.Runtime.InteropServices.Marshal.ReleaseComObject(oRecordSet);
-            }
-
-            return catid;
-        }
-
-        public static int CreateUserQuery(string name, string sql, int queryCategoryId)
-        {
-            // Check if query name exists first
-            int queryId = GetUserQueryID(name);
-
-            // Create if query doesn't exist
-            if (queryId == 0)
-            {
-                SAPbobsCOM.UserQueries userQuery = (SAPbobsCOM.UserQueries)Program.oCompany.GetBusinessObject(BoObjectTypes.oUserQueries);
-                try
-                {
-
-
-                    // Create new Query
-                    userQuery.QueryType = UserQueryTypeEnum.uqtWizard;
-                    userQuery.QueryCategory = queryCategoryId;
-                    userQuery.QueryDescription = name;
-                    userQuery.Query = sql;
-
-                    if (userQuery.Add() == 0)
-                    {
-                        queryId = GetUserQueryID(name);
-                        //**** Not Exist Query
-                        return queryId;
-                    }
-                }
-                catch (Exception ex)
-                {
-
-                }
-                finally
-                {
-                    System.Runtime.InteropServices.Marshal.ReleaseComObject(userQuery);
-                }
-            }
-
             else
             {
-
+                Program.SBO_Application.StatusBar.SetText("NCHL Bank Detail is missing!", SAPbouiCOM.BoMessageTime.bmt_Medium, SAPbouiCOM.BoStatusBarMessageType.smt_Error);
+                return false;
             }
-            return queryId;
-        }
-
-        public static int GetUserQueryID(string name)
-        {
-            // Creates a new User Query if the name specified does not exist
-            // Returns the Internal Key ID of the Query
-
-            int queryID = 0;
-
-            #region Lookup Query Name and Get ID if exists
-
-            Recordset oRecordset = (Recordset)Program.oCompany.GetBusinessObject(BoObjectTypes.BoRecordset);
-            try
-            {
-                string sql = "SELECT \"IntrnalKey\" FROM \"OUQR\" WHERE \"QName\" = '" + name + "'";
-
-                oRecordset.DoQuery(sql);
-                if (!oRecordset.EoF)
-                {
-                    // Return query ID as it already exists
-                    return Convert.ToInt32(oRecordset.Fields.Item("intrnalkey").Value);
-                }
-            }
-            catch (Exception ex)
-            {
-
-            }
-            finally
-            {
-                System.Runtime.InteropServices.Marshal.ReleaseComObject(oRecordset);
-            }
-
-            #endregion
-
-            // Garbage Collection
-            GC.Collect();
-
-            return queryID;
-        }
-
-        public static void AssignQuery(int queryId, string formId, string itemId, string column = "-1", bool AutoRefresh = false, string FieldId = "")
-        {
-            // This will assign a query to a form item & column 
-            // This will reassign a query to an item that already has a query assigned
-            // CSHS Table = User Defined Values Table
-
-            SAPbobsCOM.Recordset oRecordSet = (SAPbobsCOM.Recordset)Program.oCompany.GetBusinessObject(SAPbobsCOM.BoObjectTypes.BoRecordset);
-
-            try
-            {
-                // Validate query exists
-                oRecordSet.DoQuery("SELECT \"IntrnalKey\", \"QName\" FROM \"OUQR\" WHERE \"IntrnalKey\" = " + queryId);
-                bool queryExists = false;
-                if (!oRecordSet.EoF)
-                {
-                    queryExists = true;
-                }
-                else
-                {
-
-                }
-
-                if (queryExists)
-                {
-                    // Values Example
-                    //string form = "VoucherCodes.Form1";
-                    //string item = "PMatrix";
-                    //string column = "PName";  // Matrix Column Name 
-
-                    // Get UDV For Form Item
-                    oRecordSet = (SAPbobsCOM.Recordset)Program.oCompany.GetBusinessObject(SAPbobsCOM.BoObjectTypes.BoRecordset);
-                    oRecordSet.DoQuery("SELECT \"IndexID\" FROM \"CSHS\" WHERE \"FormID\" = '" + formId + "' AND \"ItemID\" = '" + itemId + "' AND \"ColID\" = '" + column + "'");
-                    if (!oRecordSet.EoF)
-                    {
-                        #region Update Existing
-
-                        SAPbobsCOM.FormattedSearches fms = (SAPbobsCOM.FormattedSearches)Program.oCompany.GetBusinessObject(BoObjectTypes.oFormattedSearches);
-                        fms.GetByKey(Convert.ToInt32(oRecordSet.Fields.Item("IndexID").Value));
-                        fms.Action = BoFormattedSearchActionEnum.bofsaQuery;
-                        if (AutoRefresh)
-                        {
-                            fms.ForceRefresh = BoYesNoEnum.tYES;
-                            fms.FieldID = FieldId;
-                            fms.Refresh = BoYesNoEnum.tYES;
-                        }
-                        fms.FormID = formId;
-                        fms.ItemID = itemId;
-                        fms.ColumnID = column;
-                        fms.QueryID = queryId;
-                        fms.Update();
-                        //  Program.ErrorHandler(fms.Update(), "updating a form items assigned user defined values(fms)"); 
-
-                        #endregion
-                    }
-                    else
-                    {
-                        #region Add New
-
-                        SAPbobsCOM.FormattedSearches fms = (SAPbobsCOM.FormattedSearches)Program.oCompany.GetBusinessObject(BoObjectTypes.oFormattedSearches);
-                        fms.Action = BoFormattedSearchActionEnum.bofsaQuery;
-                        if (AutoRefresh)
-                        {
-                            fms.ForceRefresh = BoYesNoEnum.tYES;
-                            fms.FieldID = FieldId;
-                            fms.Refresh = BoYesNoEnum.tYES;
-                        }
-                        fms.FormID = formId;
-                        fms.ItemID = itemId;
-                        fms.ColumnID = column;
-                        fms.QueryID = queryId;
-                        fms.Add();
-                        //  Program.ErrorHandler(fms.Add(), "adding a user defined value to form item");
-
-                        #endregion
-                    }
-                }
-                else
-                {
-
-                }
-            }
-            catch (Exception ex)
-            {
-
-            }
-            finally
-            {
-                // GC Release
-                System.Runtime.InteropServices.Marshal.ReleaseComObject(oRecordSet);
-            }
+            return true;
         }
     }
 }
