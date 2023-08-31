@@ -58,7 +58,6 @@ namespace ConnectIPS.Integration.Forms.Users
             this.StaticText10 = ((SAPbouiCOM.StaticText)(this.GetItem("Item_21").Specific));
             this.tTotal = ((SAPbouiCOM.EditText)(this.GetItem("tTotal").Specific));
             this.btnCancel = ((SAPbouiCOM.Button)(this.GetItem("2").Specific));
-            this.btnCancel.ClickAfter += new SAPbouiCOM._IButtonEvents_ClickAfterEventHandler(this.btnCancel_ClickAfter);
             this.btnPay = ((SAPbouiCOM.Button)(this.GetItem("bPay").Specific));
             this.btnPay.ClickAfter += new SAPbouiCOM._IButtonEvents_ClickAfterEventHandler(this.btnPay_ClickAfter);
             this.fldSender = ((SAPbouiCOM.Folder)(this.GetItem("Item_26").Specific));
@@ -81,8 +80,6 @@ namespace ConnectIPS.Integration.Forms.Users
 
         private void OnCustomInitialize()
         {
-            //fldSender.Select();
-            //fldBeneficiary.Select();
             UIAPIRawForm.Left = (Program.SBO_Application.Desktop.Width - UIAPIRawForm.Width) / 2;
             UIAPIRawForm.Top = Convert.ToInt32((Program.SBO_Application.Desktop.Height - UIAPIRawForm.Height) / 2.5);
         }
@@ -118,14 +115,10 @@ namespace ConnectIPS.Integration.Forms.Users
 
         private void btnPay_ClickAfter(object sboObject, SAPbouiCOM.SBOItemEventArg pVal)
         {
-            var form = (SAPbouiCOM.Form)Application.SBO_Application.Forms.GetFormByTypeAndCount(_type, _count);
-            var processButton = (SAPbouiCOM.Button)form.Items.Item("bProc").Specific;
+            var outgoingPayment = (SAPbouiCOM.Form)Application.SBO_Application.Forms.GetFormByTypeAndCount(_type, _count);
+            var processButton = (SAPbouiCOM.Button)outgoingPayment.Items.Item("bProc").Specific;
             processButton.Item.Click();
             btnCancel.Item.Click();
-        }
-
-        private void btnCancel_ClickAfter(object sboObject, SAPbouiCOM.SBOItemEventArg pVal)
-        {
         }
 
     }
