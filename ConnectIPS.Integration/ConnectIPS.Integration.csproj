@@ -108,7 +108,6 @@
     <Compile Include="Helpers\B1FormBase.cs" />
     <Compile Include="Helpers\B1SystemFormBase.cs" />
     <Compile Include="Helpers\GlobalVariables.cs" />
-    <Compile Include="Helpers\HttpHelper.cs" />
     <Compile Include="Helpers\Menu.cs" />
     <Compile Include="Helpers\SAPColumn.cs" />
     <Compile Include="Program.cs" />
