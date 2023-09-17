@@ -33,8 +33,8 @@ namespace ConnectIPS.Integration
                 else
                     oApp = new Application(args[0]);
 
-                SBO_Application = SAPbouiCOM.Framework.Application.SBO_Application;
-                oCompany = (SAPbobsCOM.Company)SBO_Application.Company.GetDICompany();
+                SBO_Application = Application.SBO_Application;
+                oCompany = (Company)SBO_Application.Company.GetDICompany();
                 Menu MyMenu = new Menu();
                 Menu.AddMenu();
 
@@ -51,6 +51,7 @@ namespace ConnectIPS.Integration
             }
             catch (Exception ex)
             {
+                Application.SBO_Application.StatusBar.SetSystemMessage($"Error occurs due to: {ex.Message}", SAPbouiCOM.BoMessageTime.bmt_Short, SAPbouiCOM.BoStatusBarMessageType.smt_Error);
                 System.Windows.Forms.MessageBox.Show(ex.Message);
             }
         }

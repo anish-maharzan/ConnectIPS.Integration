@@ -94,6 +94,9 @@
     <Compile Include="Forms\SAP\Outgoing Payments.b1f.cs">
       <DependentUpon>Outgoing Payments.b1f</DependentUpon>
     </Compile>
+    <Compile Include="Forms\SAP\Payment Means.b1f.cs">
+      <DependentUpon>Payment Means.b1f</DependentUpon>
+    </Compile>
     <Compile Include="Forms\Users\TransactionConfimation.b1f.cs">
       <DependentUpon>TransactionConfimation.b1f</DependentUpon>
     </Compile>
@@ -122,6 +125,13 @@
     </None>
     <None Include="Forms\SAP\Outgoing Payments.b1f__orig_srf">
       <DependentUpon>Outgoing Payments.b1f</DependentUpon>
+    </None>
+    <None Include="Forms\SAP\Payment Means.b1f">
+      <FormCategory>SystemForm</FormCategory>
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Forms\SAP\Payment Means.b1f__orig_srf">
+      <DependentUpon>Payment Means.b1f</DependentUpon>
     </None>
     <None Include="Forms\Users\TransactionConfimation.b1f">
       <FormCategory>UserForm</FormCategory>
