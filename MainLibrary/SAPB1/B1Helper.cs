@@ -547,7 +547,8 @@ namespace MainLibrary.SAPB1
 
                     if (linktoEntities != "")
                     {
-                        objUserFieldMD.LinkedTable = linktoEntities;
+                        objUserFieldMD.LinkedSystemObject = UDFLinkedSystemObjectTypesEnum.ulChartOfAccounts;
+                        //objUserFieldMD.LinkedTable = linktoEntities;
 
                     }
                     if (!string.IsNullOrEmpty(DefV))
