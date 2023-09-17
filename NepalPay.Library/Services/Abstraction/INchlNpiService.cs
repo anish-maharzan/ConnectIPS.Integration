@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 
 namespace NepalPay.Library.Services.Abstraction
 {
-    public interface INPIService
+    public interface INchlNpiService
     {
         Task<CipsBatchResponseModel> SendTransactionAsync();
         bool ValidateTransferAmount(double transactionAmt, bool isSameBank, out string message);

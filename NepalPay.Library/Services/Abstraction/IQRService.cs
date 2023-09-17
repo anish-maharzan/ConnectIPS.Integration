@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace NepalPay.Library.Services.Abstraction
 {
-    public interface IDynamicQRService
+    public interface IQRService
     {
         Task<QRGenerationResponse> GenerateQRAsync(QRGeneration request);
         Task<IResponse> VerifyPayment(PaymentVerification request);

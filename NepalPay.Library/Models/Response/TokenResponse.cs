@@ -9,5 +9,4 @@
         public string scope { get; set; }
         public object customerdetails { get; set; }
     }
-
 }

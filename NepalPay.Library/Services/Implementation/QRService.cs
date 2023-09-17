@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace NepalPay.Library.Services.Implementation
 {
-    public class QRService : IDynamicQRService
+    public class QRService : IQRService
     {
         private readonly HttpHelper httpHelper;
 

@@ -9,17 +9,17 @@ using System.Threading.Tasks;
 
 namespace NepalPay.Library.Services.Implementation
 {
-    public class NonRealTimeService : INPIService
+    public class NchlIpsService : INchlNpiService
     {
         private readonly HttpHelper httpHelper;
-        private readonly NonRealTimeTransaction data;
+        private readonly NchlIpsTransaction data;
         private static readonly double upperLimit = 2000000;
 
-        public NonRealTimeService()
+        public NchlIpsService()
         {
         }
 
-        public NonRealTimeService(NonRealTimeTransaction request)
+        public NchlIpsService(NchlIpsTransaction request)
         {
             httpHelper = new HttpHelper(NPICredential.BaseUrl);
             data = request;
@@ -69,7 +69,7 @@ namespace NepalPay.Library.Services.Implementation
             return chargeAmount;
         }
 
-        private string GetNepalPayToken(NonRealTimeTransaction request)
+        private string GetNepalPayToken(NchlIpsTransaction request)
         {
             var batchDetail = request.nchlIpsBatchDetail;
             var batchString = GetBatchString(batchDetail.batchId, batchDetail.debtorAgent, batchDetail.debtorBranch, batchDetail.debtorAccount, batchDetail.batchAmount.ToString(), batchDetail.batchCrncy, batchDetail.categoryPurpose);

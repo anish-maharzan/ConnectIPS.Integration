@@ -9,19 +9,19 @@ using System.Threading.Tasks;
 
 namespace NepalPay.Library.Services.Implementation
 {
-    public class RealTimeService : INPIService
+    public class NchlCipsService : INchlNpiService
     {
         private readonly HttpHelper httpHelper;
-        private readonly RealTimeTransaction _request;
-        private static readonly double upperLimitSameBank = 2000000; 
+        private readonly NchlCIpsTransaction _request;
+        private static readonly double upperLimitSameBank = 2000000;
         private static readonly double upperLimitDiffBank = 10000000;
 
-        public RealTimeService()
+        public NchlCipsService()
         {
             httpHelper = new HttpHelper(NPICredential.BaseUrl);
         }
 
-        public RealTimeService(RealTimeTransaction request)
+        public NchlCipsService(NchlCIpsTransaction request)
         {
             httpHelper = new HttpHelper(NPICredential.BaseUrl);
             _request = request;
@@ -76,7 +76,7 @@ namespace NepalPay.Library.Services.Implementation
             return chargeAmount;
         }
 
-        private string GetNepalPayToken(RealTimeTransaction request)
+        private string GetNepalPayToken(NchlCIpsTransaction request)
         {
             var batchDetail = request.cipsBatchDetail;
             var batchString = GetBatchString(batchDetail.batchId, batchDetail.debtorAgent, batchDetail.debtorBranch, batchDetail.debtorAccount, batchDetail.batchAmount, batchDetail.batchCrncy);
