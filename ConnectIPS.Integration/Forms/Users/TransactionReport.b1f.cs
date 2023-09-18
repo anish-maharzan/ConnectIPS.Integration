@@ -1,6 +1,8 @@
-﻿using NepalPay.Library.Models.Response;
+﻿using MainLibrary.SAPB1;
+using NepalPay.Library.Models.Response;
 using NepalPay.Library.Models.Response.Report;
 using NepalPay.Library.Services.Implementation;
+using SAPbobsCOM;
 using SAPbouiCOM.Framework;
 using System;
 using System.Collections.Generic;
@@ -105,10 +107,12 @@ namespace ConnectIPS.Integration.Forms.Users
         {
             try
             {
+                Program.SBO_Application.StatusBar.SetText("Loading.....", SAPbouiCOM.BoMessageTime.bmt_Medium, SAPbouiCOM.BoStatusBarMessageType.smt_Success);
                 Matrix0.Clear();
                 var type = CmbType.Value;
 
                 List<ReportDetail> rows = new List<ReportDetail>();
+                List<ReportDetail> lines = new List<ReportDetail>();
                 if (type == "RT")
                 {
                     if (Option1.Selected)
@@ -116,7 +120,8 @@ namespace ConnectIPS.Integration.Forms.Users
                         DateTime fromDate = DateTime.ParseExact(TxFDate.Value, "yyyyMMdd", null);
                         DateTime toDate = DateTime.ParseExact(TxTDate.Value, "yyyyMMdd", null);
                         List<CIpsReportByDateResponse> response = CipsReportByDate(fromDate, toDate).GetAwaiter().GetResult();
-                        var lines = GetReportDetails(response);
+                        lines = GetReportDetails(response);
+                        SetDocEntry(lines);
                         LoadMatrix(lines);
 
                     }
@@ -124,7 +129,8 @@ namespace ConnectIPS.Integration.Forms.Users
                     {
                         var batchId = TxBatch.Value;
                         CIpsReportByBatchResponse response = CipsReportByBatch(batchId).GetAwaiter().GetResult();
-                        var lines = GetReportDetails(response);
+                        lines = GetReportDetails(response);
+                        SetDocEntry(lines);
                         LoadMatrix(lines);
                     }
                 }
@@ -150,6 +156,19 @@ namespace ConnectIPS.Integration.Forms.Users
             }
         }
 
+        private void SetDocEntry(List<ReportDetail> Lines)
+        {
+            string query = $@"SELECT T0.""U_NCHLBATCH"", T0.""DocEntry"" FROM OVPM T0 WHERE T0.""U_NCHLBATCH""  IN ({string.Join(",", Lines.Select(x => "'" + x.BatchId + "'"))})";
+            Recordset Rec = (Recordset)B1Helper.DiCompany.GetBusinessObject(BoObjectTypes.BoRecordset);
+            Rec.DoQuery(query);
+            if (Rec.RecordCount > 0)
+            {
+                var batchID = Rec.Fields.Item(0).Value.ToString();
+                var docEntry = Convert.ToInt32(Rec.Fields.Item(1).Value.ToString());
+                Lines.First(x => x.BatchId == batchID).DocEntry = docEntry;
+            }
+        }
+
         private void LoadMatrix(List<ReportDetail> records)
         {
             var reportDT = UIAPIRawForm.DataSources.DataTables.Item("Report");
@@ -158,6 +177,8 @@ namespace ConnectIPS.Integration.Forms.Users
             foreach (var record in records)
             {
                 reportDT.Rows.Add();
+                if (record.DocEntry != 0)
+                    reportDT.SetValue("DocEntry", index, record.DocEntry);
                 reportDT.SetValue("LineId", index, record.LineId);
                 reportDT.SetValue("Id", index, record.Id);
                 reportDT.SetValue("Batch ID", index, record.BatchId);
@@ -319,6 +340,7 @@ namespace ConnectIPS.Integration.Forms.Users
 
     public class ReportDetail
     {
+        public int DocEntry { get; set; }
         public int LineId { get; set; }
         public int Id { get; set; }
         public string BatchId { get; set; }
