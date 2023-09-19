@@ -5,7 +5,7 @@ namespace NepalPay.Library.Models.Transaction
     public class NchlIpsBatchDetail
     {
         public string batchId { get; set; }
-        public double batchAmount { get; set; }
+        public string batchAmount { get; set; }
         public int batchCount { get; set; }
         public string batchCrncy { get; set; }
         public string categoryPurpose { get; set; }
@@ -30,7 +30,7 @@ namespace NepalPay.Library.Models.Transaction
     {
         public string instructionId { get; set; }
         public string endToEndId { get; set; }
-        public double amount { get; set; }
+        public string amount { get; set; }
         public string creditorAgent { get; set; }
         public string creditorBranch { get; set; }
         public string creditorName { get; set; }
