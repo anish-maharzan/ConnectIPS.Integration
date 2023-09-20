@@ -136,16 +136,24 @@ namespace ConnectIPS.Integration.Forms.Users
                 }
                 else
                 {
-                    //if (Option1.Selected)
-                    //{
-                    //    var response = IpsReportByBatch(TxBatch.Value).GetAwaiter().GetResult();
-                    //}
-                    //else if (Option3.Selected)
-                    //{
-                    //    DateTime fromDate = DateTime.ParseExact(TxFDate.Value, "yyyyMMdd", null);
-                    //    DateTime toDate = DateTime.ParseExact(TxTDate.Value, "yyyyMMdd", null);
-                    //    var response = IpsReportByDate(fromDate, toDate).GetAwaiter().GetResult();
-                    //}
+                    if (Option1.Selected)
+                    {
+                        DateTime fromDate = DateTime.ParseExact(TxFDate.Value, "yyyyMMdd", null);
+                        DateTime toDate = DateTime.ParseExact(TxTDate.Value, "yyyyMMdd", null);
+                        List<NchlIpsReportByDateResponse> response = NchlIpsReportByDate(fromDate, toDate).GetAwaiter().GetResult();
+                        lines = GetReportDetails(response);
+                        SetDocEntry(lines);
+                        LoadMatrix(lines);
+
+                    }
+                    else if (Option2.Selected)
+                    {
+                        var batchId = TxBatch.Value;
+                        NchlIpsReportByBatchResponse response = NchlIpsReportByBatch(batchId).GetAwaiter().GetResult();
+                        lines = GetReportDetails(response);
+                        SetDocEntry(lines);
+                        LoadMatrix(lines);
+                    }
                 }
 
                 Program.SBO_Application.StatusBar.SetText($"Successfully loaded", SAPbouiCOM.BoMessageTime.bmt_Medium, SAPbouiCOM.BoStatusBarMessageType.smt_Success);
@@ -201,7 +209,7 @@ namespace ConnectIPS.Integration.Forms.Users
                 reportDT.SetValue("creditorBranch", index, record.CreditorBranch);
                 reportDT.SetValue("creditorName", index, record.CreditorName);
                 reportDT.SetValue("creditorAccount", index, record.CreditorAccount);
-                reportDT.SetValue("particulars", index, record.Particulars);
+                reportDT.SetValue("particulars", index, record.Particulars ?? "");
                 reportDT.SetValue("reversalStatus", index, record.ReversalStatus ?? "");
 
                 index++;
@@ -225,19 +233,19 @@ namespace ConnectIPS.Integration.Forms.Users
             return response;
         }
 
-        //private async Task<CIpsReportByDateResponse> IpsReportByDate(DateTime fromDate, DateTime toDate)
-        //{
-        //    var reportService = new IpsReportingService();
-        //    var response = await reportService.GetTransactionReport(fromDate, toDate);
-        //    return response;
-        //}
+        private async Task<List<NchlIpsReportByDateResponse>> NchlIpsReportByDate(DateTime fromDate, DateTime toDate)
+        {
+            var reportService = new NhclIpsReportingService();
+            var response = await reportService.GetTransactionReport(fromDate, toDate);
+            return response;
+        }
 
-        //private async Task<CIpsReportByDateResponse> IpsReportByBatch(string batchId)
-        //{
-        //    var reportService = new IpsReportingService();
-        //    var response = await reportService.GetTransactionReport(batchId);
-        //    return response;
-        //}
+        private async Task<NchlIpsReportByBatchResponse> NchlIpsReportByBatch(string batchId)
+        {
+            var reportService = new NhclIpsReportingService();
+            var response = await reportService.GetTransactionReport(batchId);
+            return response;
+        }
 
         private void Option1_ClickAfter(object sboObject, SAPbouiCOM.SBOItemEventArg pVal)
         {
@@ -266,7 +274,6 @@ namespace ConnectIPS.Integration.Forms.Users
             TxFDate.Value = "";
             TxTDate.Value = "";
         }
-
 
         private List<ReportDetail> GetReportDetails(List<CIpsReportByDateResponse> response)
         {
@@ -332,6 +339,75 @@ namespace ConnectIPS.Integration.Forms.Users
                     CreditorAccount = report.cipsTransactionDetailList.First().creditorAccount,
                     Particulars =   report.cipsTransactionDetailList.First().particulars,
                     ReversalStatus = report.cipsTransactionDetailList.First().reversalStatus?.ToString(),
+                }
+            };
+            return result;
+        }
+
+        private List<ReportDetail> GetReportDetails(List<NchlIpsReportByDateResponse> response)
+        {
+            int index = 1;
+            var result = response.Select(x => new ReportDetail()
+            {
+                LineId = index++,
+                Id = x.nchlIpsBatchDetail.id,
+                BatchId = x.nchlIpsBatchDetail.batchId,
+                RecDate = x.nchlIpsBatchDetail.recDate.Replace("-", ""),
+                BatchAmount = x.nchlIpsBatchDetail.batchAmount,
+                BatchChargeAmount = x.nchlIpsBatchDetail.batchChargeAmount,
+                DebtorAgent = x.nchlIpsBatchDetail.debtorAgent,
+                DebtorBranch = x.nchlIpsBatchDetail.debtorBranch,
+                DebtorName = x.nchlIpsBatchDetail.debtorName,
+                DebtorAccount = x.nchlIpsBatchDetail.debtorAccount,
+                RcreTime = x.nchlIpsBatchDetail.rcreTime.ToString(),
+                DebitStatus = x.nchlIpsBatchDetail.debitStatus,
+                Id1 = x.nchlIpsTransactionDetailList.First().id,
+                RecDate1 = x.nchlIpsTransactionDetailList.First().recDate.Replace("-", ""),
+                InstructionID = x.nchlIpsTransactionDetailList.First().instructionId,
+                EndToEndId = x.nchlIpsTransactionDetailList.First().endToEndId,
+                Amount = x.nchlIpsTransactionDetailList.First().amount,
+                ChargeAmount = x.nchlIpsTransactionDetailList.First().chargeAmount,
+                CreditorAgent = x.nchlIpsTransactionDetailList.First().creditorAgent,
+                CreditorBranch = x.nchlIpsTransactionDetailList.First().creditorBranch,
+                CreditorName = x.nchlIpsTransactionDetailList.First().creditorName,
+                CreditorAccount = x.nchlIpsTransactionDetailList.First().creditorAccount,
+                Particulars = x.nchlIpsTransactionDetailList.First().particulars,
+                ReversalStatus = x.nchlIpsTransactionDetailList.First().reversalStatus?.ToString(),
+            }).ToList();
+            return result;
+        }
+
+        private List<ReportDetail> GetReportDetails(NchlIpsReportByBatchResponse report)
+        {
+            int index = 1;
+            List<ReportDetail> result = new List<ReportDetail>()
+            {
+                new ReportDetail()
+                {
+                LineId = index++,
+                    Id = report.id,
+                    BatchId = report.batchId,
+                    RecDate = report.recDate.Replace("-", ""),
+                    BatchAmount = report.batchAmount,
+                    BatchChargeAmount = report.batchChargeAmount,
+                    DebtorAgent = report.debtorAgent,
+                    DebtorBranch = report.debtorBranch,
+                    DebtorName = report.debtorName,
+                    DebtorAccount = report.debtorAccount,
+                    RcreTime = report.rcreTime,
+                    DebitStatus =report.debitStatus,
+                    Id1 = report.nchlIpsTransactionDetailList.First().id,
+                    RecDate1 = report.nchlIpsTransactionDetailList.First().recDate.Replace("-", ""),
+                    InstructionID = report.nchlIpsTransactionDetailList.First().instructionId,
+                    EndToEndId = report.nchlIpsTransactionDetailList.First().endToEndId,
+                    Amount = report.nchlIpsTransactionDetailList.First().amount,
+                    ChargeAmount = report.nchlIpsTransactionDetailList.First().chargeAmount,
+                    CreditorAgent = report.nchlIpsTransactionDetailList.First().creditorAgent,
+                    CreditorBranch = report.nchlIpsTransactionDetailList.First().creditorBranch,
+                    CreditorName = report.nchlIpsTransactionDetailList.First().creditorName,
+                    CreditorAccount = report.nchlIpsTransactionDetailList.First().creditorAccount,
+                    Particulars =   report.nchlIpsTransactionDetailList.First().particulars,
+                    ReversalStatus = report.nchlIpsTransactionDetailList.First().reversalStatus?.ToString(),
                 }
             };
             return result;
