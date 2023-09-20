@@ -25,7 +25,7 @@ namespace NepalPay.Library.Services.Implementation
             data = request;
         }
 
-        public async Task<CipsBatchResponseModel> SendTransactionAsync()
+        public async Task<NchlNpiResponse> SendTransactionAsync()
         {
             var refreshToken = await AuthService.GetRefreshTokenAsync();
             var accessToken = await AuthService.GetAccessTokenAsync(refreshToken.refresh_token);
@@ -34,7 +34,7 @@ namespace NepalPay.Library.Services.Implementation
             string url = "api/postnchlipsbatch";
             string requestBody = JsonConvert.SerializeObject(data);
             httpHelper.AddBearerToken(accessToken.access_token);
-            var response = await httpHelper.PostAsync<CipsBatchResponseModel>(url, requestBody);
+            var response = await httpHelper.PostAsync<NchlNpiResponse>(url, requestBody);
             return response;
         }
 

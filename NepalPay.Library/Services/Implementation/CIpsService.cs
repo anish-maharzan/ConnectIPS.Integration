@@ -9,25 +9,25 @@ using System.Threading.Tasks;
 
 namespace NepalPay.Library.Services.Implementation
 {
-    public class NchlCipsService : INchlNpiService
+    public class CIpsService : INchlNpiService
     {
         private readonly HttpHelper httpHelper;
-        private readonly NchlCIpsTransaction _request;
+        private readonly CIpsTransaction _request;
         private static readonly double upperLimitSameBank = 2000000;
         private static readonly double upperLimitDiffBank = 10000000;
 
-        public NchlCipsService()
+        public CIpsService()
         {
             httpHelper = new HttpHelper(NPICredential.BaseUrl);
         }
 
-        public NchlCipsService(NchlCIpsTransaction request)
+        public CIpsService(CIpsTransaction request)
         {
             httpHelper = new HttpHelper(NPICredential.BaseUrl);
             _request = request;
         }
 
-        public async Task<CipsBatchResponseModel> SendTransactionAsync()
+        public async Task<NchlNpiResponse> SendTransactionAsync()
         {
             var refreshToken = await AuthService.GetRefreshTokenAsync();
             var accessToken = await AuthService.GetAccessTokenAsync(refreshToken.refresh_token);
@@ -36,7 +36,7 @@ namespace NepalPay.Library.Services.Implementation
             string url = "api/postcipsbatch";
             string requestBody = JsonConvert.SerializeObject(_request);
             httpHelper.AddBearerToken(accessToken.access_token);
-            var response = await httpHelper.PostAsync<CipsBatchResponseModel>(url, requestBody);
+            var response = await httpHelper.PostAsync<NchlNpiResponse>(url, requestBody);
             return response;
         }
 
@@ -76,7 +76,7 @@ namespace NepalPay.Library.Services.Implementation
             return chargeAmount;
         }
 
-        private string GetNepalPayToken(NchlCIpsTransaction request)
+        private string GetNepalPayToken(CIpsTransaction request)
         {
             var batchDetail = request.cipsBatchDetail;
             var batchString = GetBatchString(batchDetail.batchId, batchDetail.debtorAgent, batchDetail.debtorBranch, batchDetail.debtorAccount, batchDetail.batchAmount, batchDetail.batchCrncy);

@@ -49,12 +49,12 @@ namespace NepalPay.Library.Models.Transaction
 
     }
 
-    public class NchlCIpsTransaction
+    public class CIpsTransaction
     {
         public CIpsBatchDetail cipsBatchDetail { get; set; }
         public List<CIpsTransactionDetail> cipsTransactionDetailList { get; set; }
         public string token { get; set; }
-        public NchlCIpsTransaction()
+        public CIpsTransaction()
         {
             cipsTransactionDetailList = new List<CIpsTransactionDetail>();
         }

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace NepalPay.Library.Services.Abstraction
 {
-    public interface IReportingService
+    public interface ICIpsReportingService
     {
         Task<List<CIpsReportByDateResponse>> GetTransactionReport(DateTime txnFromDate, DateTime txntoDate);
         Task<CIpsReportByBatchResponse> GetTransactionReport(string batchid);

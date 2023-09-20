@@ -2,11 +2,11 @@
 
 namespace NepalPay.Library.Models.Response
 {
-    public class CipsBatchResponseModel
+    public class NchlNpiResponse
     {
         public CipsBatchResponse cipsBatchResponse { get; set; }
         public List<CipsTxnResponse> cipsTxnResponseList { get; set; }
-        public CipsBatchResponseModel()
+        public NchlNpiResponse()
         {
             cipsTxnResponseList = new List<CipsTxnResponse>();
         }

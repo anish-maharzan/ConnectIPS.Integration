@@ -10,21 +10,21 @@ using System.Threading.Tasks;
 
 namespace NepalPay.Library.Services.Implementation
 {
-    public class CIpsReportingService : ICIpsReportingService
+    public class NhclIpsReportingService : INchlIpsReportingService
     {
         private readonly HttpHelper httpHelper;
 
-        public CIpsReportingService()
+        public NhclIpsReportingService()
         {
             httpHelper = new HttpHelper(NPICredential.BaseUrl);
 
         }
-        public async Task<List<CIpsReportByDateResponse>> GetTransactionReport(DateTime txnFromDate, DateTime txntoDate)
+        public async Task<List<NchlIpsReportByDateResponse>> GetTransactionReport(DateTime txnFromDate, DateTime txntoDate)
         {
             var refreshToken = await AuthService.GetRefreshTokenAsync();
             var accessToken = await AuthService.GetAccessTokenAsync(refreshToken.refresh_token);
 
-            string url = "api/getcipstxnlistbydate";
+            string url = "api/getnchlipstxnlistbydate";
             var data = new
             {
                 txnDateFrom = txnFromDate.ToString("yyyy-MM-dd"),
@@ -32,23 +32,23 @@ namespace NepalPay.Library.Services.Implementation
             };
             string requestBody = JsonConvert.SerializeObject(data);
             httpHelper.AddBearerToken(accessToken.access_token);
-            var response = await httpHelper.PostAsync<List<CIpsReportByDateResponse>>(url, requestBody);
+            var response = await httpHelper.PostAsync<List<NchlIpsReportByDateResponse>>(url, requestBody);
             return response;
         }
 
-        public async Task<CIpsReportByBatchResponse> GetTransactionReport(string batchid)
+        public async Task<NchlIpsReportByBatchResponse> GetTransactionReport(string batchid)
         {
             var refreshToken = await AuthService.GetRefreshTokenAsync();
             var accessToken = await AuthService.GetAccessTokenAsync(refreshToken.refresh_token);
 
-            string url = "api/getcipstxnlistbybatchid";
+            string url = "api/getnchlipstxnlistbybatchid";
             var data = new
             {
                 batchId = batchid
             };
             string requestBody = JsonConvert.SerializeObject(data);
             httpHelper.AddBearerToken(accessToken.access_token);
-            var response = await httpHelper.PostAsync<CIpsReportByBatchResponse>(url, requestBody);
+            var response = await httpHelper.PostAsync<NchlIpsReportByBatchResponse>(url, requestBody);
             return response;
         }
     }

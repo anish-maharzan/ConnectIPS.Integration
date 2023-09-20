@@ -46,14 +46,16 @@
     <Compile Include="Models\Account\ValidateBankAccount.cs" />
     <Compile Include="Models\Response\CIpsReportByBatchResponse.cs" />
     <Compile Include="Models\Response\CIpsReportByDateResponse.cs" />
+    <Compile Include="Models\Response\NchlIpsReportByBatchResponse.cs" />
+    <Compile Include="Models\Response\NchlIpsReportByDateResponse.cs" />
+    <Compile Include="Models\Response\NchlNpiResponse.cs" />
     <Compile Include="Models\Response\ValidateBankAccountResponse.cs" />
     <Compile Include="Models\Account\BankAccount.cs" />
     <Compile Include="Models\Authentication\BasicAuthentication.cs" />
     <Compile Include="Models\NPI\NchlIpsTransaction.cs" />
     <Compile Include="Models\NPI\PaymentVerification.cs" />
     <Compile Include="Models\QR\QRGeneration.cs" />
-    <Compile Include="Models\NPI\NchlCIpsTransaction.cs" />
-    <Compile Include="Models\Response\CipsBatchResponseModel.cs" />
+    <Compile Include="Models\NPI\CIpsTransaction.cs" />
     <Compile Include="Models\Response\PaymentVerificationResponse.cs" />
     <Compile Include="Models\Response\QRGenerationResponse.cs" />
     <Compile Include="Models\Response\ReponseCode.cs" />
@@ -61,17 +63,18 @@
     <Compile Include="Models\Authentication\UserAuthentication.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\Abstraction\IBankAccountService.cs" />
+    <Compile Include="Services\Abstraction\INchlIpsReportingService.cs" />
     <Compile Include="Services\Abstraction\IQRService.cs" />
     <Compile Include="Services\Abstraction\INchlNpiService.cs" />
-    <Compile Include="Services\Abstraction\IReportingService.cs" />
+    <Compile Include="Services\Abstraction\ICIpsReportingService.cs" />
     <Compile Include="Services\Implementation\AuthService.cs" />
     <Compile Include="Credentials\QRCredential.cs" />
     <Compile Include="Services\Implementation\BankAccountService.cs" />
     <Compile Include="Services\Implementation\CIpsReportingService.cs" />
-    <Compile Include="Services\Implementation\IpsReportingService.cs" />
+    <Compile Include="Services\Implementation\NhclIpsReportingService.cs" />
     <Compile Include="Services\Implementation\NchlIpsService.cs" />
     <Compile Include="Services\Implementation\QRService.cs" />
-    <Compile Include="Services\Implementation\NchlCipsService.cs" />
+    <Compile Include="Services\Implementation\CIpsService.cs" />
     <Compile Include="Services\Implementation\TokenService.cs" />
   </ItemGroup>
   <ItemGroup>
