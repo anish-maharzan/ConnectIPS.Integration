@@ -97,6 +97,9 @@
     <Compile Include="Forms\SAP\Payment Means.b1f.cs">
       <DependentUpon>Payment Means.b1f</DependentUpon>
     </Compile>
+    <Compile Include="Forms\Users\NCHL Details.b1f.cs">
+      <DependentUpon>NCHL Details.b1f</DependentUpon>
+    </Compile>
     <Compile Include="Forms\Users\TransactionConfimation.b1f.cs">
       <DependentUpon>TransactionConfimation.b1f</DependentUpon>
     </Compile>
@@ -115,6 +118,7 @@
     <Compile Include="Helpers\SAPColumn.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Services\NchlService.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config">
@@ -132,6 +136,9 @@
     </None>
     <None Include="Forms\SAP\Payment Means.b1f__orig_srf">
       <DependentUpon>Payment Means.b1f</DependentUpon>
+    </None>
+    <None Include="Forms\Users\NCHL Details.b1f">
+      <FormCategory>UserForm</FormCategory>
     </None>
     <None Include="Forms\Users\TransactionConfimation.b1f">
       <FormCategory>UserForm</FormCategory>
@@ -155,7 +162,9 @@
       <Install>false</Install>
     </BootstrapperPackage>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Models\" />
+  </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\MainLibrary\MainLibrary.csproj">
       <Project>{3dc8b10b-d57e-46ea-8e09-c94c6ee89169}</Project>
