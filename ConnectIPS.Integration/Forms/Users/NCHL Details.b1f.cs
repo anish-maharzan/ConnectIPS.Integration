@@ -145,7 +145,7 @@ namespace ConnectIPS.Integration.Forms.Users
                     accountName = _sender.AccountName
                 };
                 ValidateBankAccountResponse result = NchlService.ValidateAccount(bankAccount);
-                var chSender = (SAPbouiCOM.CheckBox)outgoingPayment.Items.Item("chSender").Specific;
+                //var chSender = (SAPbouiCOM.CheckBox)outgoingPayment.Items.Item("chSender").Specific;
                 if (result.responseCode != "000")
                 {
                     if (result.matchPercentate < 80)
@@ -165,7 +165,7 @@ namespace ConnectIPS.Integration.Forms.Users
 
                         if (input == 2)
                         {
-                            chSender.Checked = false;
+                            //chSender.Checked = false;
                             chValid.Checked = false;
                             return;
                         }
@@ -173,12 +173,12 @@ namespace ConnectIPS.Integration.Forms.Users
                 }
 
                 Program.SBO_Application.MessageBox("*****Sender Account is verified*****", 1, "Ok");
-                chSender.Checked = true;
+                //chSender.Checked = true;
 
                 //Verifying Receiver
                 Program.SBO_Application.StatusBar.SetText("Beneficiary Account Verifying.....", SAPbouiCOM.BoMessageTime.bmt_Medium, SAPbouiCOM.BoStatusBarMessageType.smt_Success);
 
-                var chReceiver = (SAPbouiCOM.CheckBox)outgoingPayment.Items.Item("chReceiver").Specific;
+                //var chReceiver = (SAPbouiCOM.CheckBox)outgoingPayment.Items.Item("chReceiver").Specific;
 
                 bankAccount = new ValidateBankAccount()
                 {
@@ -206,31 +206,31 @@ namespace ConnectIPS.Integration.Forms.Users
 
                         if (input == 2)
                         {
-                            chReceiver.Checked = false;
+                            //chReceiver.Checked = false;
                             chValid.Checked = false;
                             return;
                         }
                     }
                 }
                 Program.SBO_Application.MessageBox("*****Receiver Account is verified*****", 1, "Ok");
-                chReceiver.Checked = true;
+                //chReceiver.Checked = true;
 
                 //verifying amount
                 Program.SBO_Application.StatusBar.SetText("Transaction Amount Verifying.....", SAPbouiCOM.BoMessageTime.bmt_Medium, SAPbouiCOM.BoStatusBarMessageType.smt_Success);
-                var chAmt = (SAPbouiCOM.CheckBox)outgoingPayment.Items.Item("chAmt").Specific;
+                //var chAmt = (SAPbouiCOM.CheckBox)outgoingPayment.Items.Item("chAmt").Specific;
 
                 bool isSameBank = _sender.BankCode == _receiver.BankCode;
 
                 if (!NchlService.ValidateTransferAmount(_transactionType, _amount, isSameBank, out string errMessage))
                 {
                     Program.SBO_Application.StatusBar.SetText(errMessage, SAPbouiCOM.BoMessageTime.bmt_Medium, SAPbouiCOM.BoStatusBarMessageType.smt_Error);
-                    chAmt.Checked = false;
+                    //chAmt.Checked = false;
                     chValid.Checked = false;
                     return;
                 }
 
                 Program.SBO_Application.MessageBox("*****Transaction Amount is verified*****", 1, "Ok");
-                chAmt.Checked = true;
+                //chAmt.Checked = true;
 
                 chValid.Checked = true;
                 Program.SBO_Application.StatusBar.SetText("NCHL details verified", SAPbouiCOM.BoMessageTime.bmt_Medium, SAPbouiCOM.BoStatusBarMessageType.smt_Success);
