@@ -224,9 +224,9 @@ namespace MainLibrary.SAPB1
         }
         public static bool CreateUdo(string udoName, string description, string tableName, string DocumentType, string defaultform = null, string[] FormColoums = null, params string[] childTables)
         {
-            return CreateUdo(udoName, description, tableName,DocumentType,  null, defaultform, FormColoums, childTables);
+            return CreateUdo(udoName, description, tableName, DocumentType, null, defaultform, FormColoums, childTables);
         }
-        public static bool CreateUdo(string udoName, string description, string tableName, string DocumentType,  List<string> findFields, string defaultform = null, string[] FormColoums = null, params string[] childTables)
+        public static bool CreateUdo(string udoName, string description, string tableName, string DocumentType, List<string> findFields, string defaultform = null, string[] FormColoums = null, params string[] childTables)
         {
             return CreateUdo(udoName, description, tableName, DocumentType == "D" ? SAPbobsCOM.BoUDOObjType.boud_Document : SAPbobsCOM.BoUDOObjType.boud_MasterData, findFields, defaultform, FormColoums, childTables);
         }
@@ -243,19 +243,19 @@ namespace MainLibrary.SAPB1
                     oUserObjectMD.TableName = tableName;
                     oUserObjectMD.ObjectType = nObjectType;
                     oUserObjectMD.ExtensionName = string.Empty;
-                //    if (nObjectType != SAPbobsCOM.BoUDOObjType.boud_MasterData && defaultform != "Y")
-                  //  {
-                        oUserObjectMD.FindColumns.ColumnAlias = "DocEntry";
+                    //    if (nObjectType != SAPbobsCOM.BoUDOObjType.boud_MasterData && defaultform != "Y")
+                    //  {
+                    oUserObjectMD.FindColumns.ColumnAlias = "DocEntry";
                     //}
 
-                    oUserObjectMD.CanLog = SAPbobsCOM.BoYesNoEnum.tNO ;
+                    oUserObjectMD.CanLog = SAPbobsCOM.BoYesNoEnum.tNO;
                     oUserObjectMD.CanFind = SAPbobsCOM.BoYesNoEnum.tYES;
                     oUserObjectMD.CanClose = SAPbobsCOM.BoYesNoEnum.tYES;
                     oUserObjectMD.CanCancel = SAPbobsCOM.BoYesNoEnum.tYES;
                     oUserObjectMD.CanDelete = SAPbobsCOM.BoYesNoEnum.tYES;
                     oUserObjectMD.ManageSeries = SAPbobsCOM.BoYesNoEnum.tNO;
                     oUserObjectMD.CanYearTransfer = SAPbobsCOM.BoYesNoEnum.tNO;
-                  //  oUserObjectMD.LogTableName = string.Format("A{0}", tableName);
+                    //  oUserObjectMD.LogTableName = string.Format("A{0}", tableName);
 
 
 
@@ -547,7 +547,11 @@ namespace MainLibrary.SAPB1
 
                     if (linktoEntities != "")
                     {
-                        objUserFieldMD.LinkedSystemObject = UDFLinkedSystemObjectTypesEnum.ulChartOfAccounts;
+                        if (linktoEntities == "1")
+                            objUserFieldMD.LinkedSystemObject = UDFLinkedSystemObjectTypesEnum.ulChartOfAccounts;
+                        //else if (linktoEntities == "247")
+                        //    objUserFieldMD.LinkedSystemObject = 247;
+
                         //objUserFieldMD.LinkedTable = linktoEntities;
 
                     }

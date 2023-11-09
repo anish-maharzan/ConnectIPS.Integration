@@ -1,4 +1,5 @@
 ﻿using ConnectIPS.Integration.Helpers;
+using ConnectIPS.Integration.Services;
 using NepalPay.Library.Credentials;
 using NepalPay.Library.Models.Authentication;
 using SAPbobsCOM;
@@ -26,6 +27,7 @@ namespace ConnectIPS.Integration
         {
             try
             {
+
                 //Application.SBO_Application.StatusBar.SetSystemMessage("Connecting to the Add-on", SAPbouiCOM.BoMessageTime.bmt_Short, SAPbouiCOM.BoStatusBarMessageType.smt_Success);
                 Application oApp = null;
                 if (args.Length < 1)
@@ -44,6 +46,7 @@ namespace ConnectIPS.Integration
                     AddonInfoInfo.InstallUDOs();
                 }
                 InitializeNCHL();
+                PaymentService.AddIncomingPayment();
                 var applicationHandler = new ApplicationHandlers();
                 var addonName = "NCHL-NPI Integration";
                 Application.SBO_Application.StatusBar.SetSystemMessage($"{addonName} Add-on installed successfully.", SAPbouiCOM.BoMessageTime.bmt_Short, SAPbouiCOM.BoStatusBarMessageType.smt_Success);
