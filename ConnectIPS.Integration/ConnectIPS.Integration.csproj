@@ -106,9 +106,6 @@
     <Compile Include="Forms\Users\NCHL Details.b1f.cs">
       <DependentUpon>NCHL Details.b1f</DependentUpon>
     </Compile>
-    <Compile Include="Forms\Users\TransactionConfimation.b1f.cs">
-      <DependentUpon>TransactionConfimation.b1f</DependentUpon>
-    </Compile>
     <Compile Include="Forms\Users\TransactionReport.b1f.cs">
       <DependentUpon>TransactionReport.b1f</DependentUpon>
     </Compile>
@@ -158,9 +155,6 @@
       <DependentUpon>Payment Means.b1f</DependentUpon>
     </None>
     <None Include="Forms\Users\NCHL Details.b1f">
-      <FormCategory>UserForm</FormCategory>
-    </None>
-    <None Include="Forms\Users\TransactionConfimation.b1f">
       <FormCategory>UserForm</FormCategory>
     </None>
     <None Include="Forms\Users\TransactionReport.b1f">
