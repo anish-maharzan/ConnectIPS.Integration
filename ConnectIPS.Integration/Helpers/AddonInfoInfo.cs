@@ -29,9 +29,10 @@ namespace ConnectIPS.Integration.Helpers
                 B1Helper.AddField("NCHLINT", "NCHL-NPI (Bank Integration)", "OVPM", BoFieldTypes.db_Alpha, 1, BoYesNoEnum.tNO, BoFldSubTypes.st_None, false, "");
                 B1Helper.AddField("NCHLTRANTYPE", "NHCL Transaction Type", "OVPM", BoFieldTypes.db_Alpha, 15, BoYesNoEnum.tNO, BoFldSubTypes.st_None, false, "");
                 B1Helper.AddField("NCHLCATEGORY", "NCHL Category Purpose", "OVPM", BoFieldTypes.db_Alpha, 20, BoYesNoEnum.tNO, BoFldSubTypes.st_None, false, "");
-                B1Helper.AddField("NCHLVALID", "NCHL Validation", "OVPM", BoFieldTypes.db_Alpha, 1, BoYesNoEnum.tNO, BoFldSubTypes.st_None, false, "");
-                B1Helper.AddField("NCHLPAYMENT", "NHCL Payment", "OVPM", BoFieldTypes.db_Alpha, 1, BoYesNoEnum.tNO, BoFldSubTypes.st_None, false, "");
+                B1Helper.AddField("NCHLVALIDATION", "NCHL Validation", "OVPM", BoFieldTypes.db_Alpha, 1, BoYesNoEnum.tNO, BoFldSubTypes.st_None, false, "");
                 B1Helper.AddField("NCHLBATCH", "NHCL Batch", "OVPM", BoFieldTypes.db_Alpha, 20, BoYesNoEnum.tNO, BoFldSubTypes.st_None, false, "");
+
+                B1Helper.AddField("NCHLPAYMENT", "NHCL Payment", "OVPM", BoFieldTypes.db_Alpha, 1, BoYesNoEnum.tNO, BoFldSubTypes.st_None, false, "");
                 B1Helper.AddField("NCHLID", "NHCL ID", "OVPM", BoFieldTypes.db_Numeric, 11, BoYesNoEnum.tNO, BoFldSubTypes.st_None, false, "");
                 B1Helper.AddField("NCHLCODE", "NHCL Response Code", "OVPM", BoFieldTypes.db_Alpha, 5, BoYesNoEnum.tNO, BoFldSubTypes.st_None, false, "");
                 B1Helper.AddField("NCHLMSG", "NHCL Response Message", "OVPM", BoFieldTypes.db_Alpha, 254, BoYesNoEnum.tNO, BoFldSubTypes.st_None, false, "");
@@ -40,9 +41,13 @@ namespace ConnectIPS.Integration.Helpers
                 B1Helper.AddField("TOTAL", "Total Amount", "OVPM", BoFieldTypes.db_Float, 11, BoYesNoEnum.tNO, BoFldSubTypes.st_Price, false, "");
                 B1Helper.AddField("DRAFTKEY", "Draft Key", "OVPM", BoFieldTypes.db_Alpha, 15, BoYesNoEnum.tNO, BoFldSubTypes.st_None, false, "");
 
-                B1Helper.AddField("BRANCH", "Draft Key", "RCT4", BoFieldTypes.db_Alpha, 15, BoYesNoEnum.tNO, BoFldSubTypes.st_None, false, "");
+                B1Helper.AddField("BRANCH", "Branch Code", "RCT4", BoFieldTypes.db_Alpha, 15, BoYesNoEnum.tNO, BoFldSubTypes.st_None, false, "");
 
                 B1Helper.AddField("NCHLVERIFIED", "NHCL Verified", "OCRD", BoFieldTypes.db_Alpha, 1, BoYesNoEnum.tNO, BoFldSubTypes.st_None, false, "");
+                B1Helper.AddField("NCHLBANKCODE", "NHCL BANK CODE", "OCRD", BoFieldTypes.db_Alpha, 4, BoYesNoEnum.tNO, BoFldSubTypes.st_None, false, "");
+                B1Helper.AddField("NCHLBRANCHCODE", "NHCL BRANCH CODE", "OCRD", BoFieldTypes.db_Alpha, 4, BoYesNoEnum.tNO, BoFldSubTypes.st_None, false, "");
+                B1Helper.AddField("NCHLACCOUNTNUM", "NHCL ACCOUNT NUMBER", "OCRD", BoFieldTypes.db_Alpha, 20, BoYesNoEnum.tNO, BoFldSubTypes.st_None, false, "");
+                B1Helper.AddField("NCHLACCOUNTNAME", "NHCL ACCOUNT NAME", "OCRD", BoFieldTypes.db_Alpha, 140, BoYesNoEnum.tNO, BoFldSubTypes.st_None, false, "");
 
                 B1Helper.AddTable("NCHL_BANK", "NCHL Bank Detail", BoUTBTableType.bott_NoObjectAutoIncrement);
                 B1Helper.AddField("ISENABLE", "Is Enable", "NCHL_BANK", BoFieldTypes.db_Alpha, 5, BoYesNoEnum.tNO, BoFldSubTypes.st_None, true, "False", new string[,] { { "False", "False" }, { "True", "True" } });
@@ -64,6 +69,7 @@ namespace ConnectIPS.Integration.Helpers
                 B1Helper.AddField("BA_PASSWORD", "Basic Auth Password", "NCHL_NPI_CONFIG", BoFieldTypes.db_Alpha, 20, BoYesNoEnum.tNO, BoFldSubTypes.st_None, true, "");
                 B1Helper.AddField("FILEPATH", "NPI File Path", "NCHL_NPI_CONFIG", BoFieldTypes.db_Alpha, 254, BoYesNoEnum.tNO, BoFldSubTypes.st_None, true, "");
                 B1Helper.AddField("PFXPWD", "pfx Password", "NCHL_NPI_CONFIG", BoFieldTypes.db_Alpha, 254, BoYesNoEnum.tNO, BoFldSubTypes.st_None, true, "");
+                B1Helper.AddField("BATCH", "Batch Prefix", "NCHL_NPI_CONFIG", BoFieldTypes.db_Alpha, 10, BoYesNoEnum.tNO, BoFldSubTypes.st_None, true, "");
 
                 return UDOAdded;
             }

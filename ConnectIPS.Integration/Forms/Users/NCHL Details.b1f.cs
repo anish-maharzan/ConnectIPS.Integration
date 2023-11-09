@@ -149,6 +149,7 @@ namespace ConnectIPS.Integration.Forms.Users
             tTotal.Value = (amount + chargeAmount).ToString();
             tTransDet.Value = remarks;
         }
+
         private void Verification()
         {
 
@@ -157,7 +158,7 @@ namespace ConnectIPS.Integration.Forms.Users
             try
             {
                 //Verifying Sender Details
-                Program.SBO_Application.StatusBar.SetText("Sender Account Details Verifying.....", SAPbouiCOM.BoMessageTime.bmt_Medium, SAPbouiCOM.BoStatusBarMessageType.smt_Success);
+                Program.SBO_Application.StatusBar.SetText("Verifying sender account details.....", SAPbouiCOM.BoMessageTime.bmt_Medium, SAPbouiCOM.BoStatusBarMessageType.smt_Success);
                 var bankAccount = new ValidateBankAccount()
                 {
                     bankId = _sender.BankCode,
@@ -192,11 +193,11 @@ namespace ConnectIPS.Integration.Forms.Users
                     }
                 }
 
-                Program.SBO_Application.MessageBox("*****Sender Account Details is verified*****", 1, "Ok");
+                Program.SBO_Application.MessageBox("*****Sender account details are verified successfully*****", 1, "Ok");
                 //chSender.Checked = true;
 
                 //Verifying Receiver
-                Program.SBO_Application.StatusBar.SetText("Beneficiary Account Details Verifying.....", SAPbouiCOM.BoMessageTime.bmt_Medium, SAPbouiCOM.BoStatusBarMessageType.smt_Success);
+                Program.SBO_Application.StatusBar.SetText("Verifying beneficiary account details.....", SAPbouiCOM.BoMessageTime.bmt_Medium, SAPbouiCOM.BoStatusBarMessageType.smt_Success);
 
                 //var chReceiver = (SAPbouiCOM.CheckBox)outgoingPayment.Items.Item("chReceiver").Specific;
 
@@ -232,11 +233,11 @@ namespace ConnectIPS.Integration.Forms.Users
                         }
                     }
                 }
-                Program.SBO_Application.MessageBox("*****Beneficiary Account Details is verified*****", 1, "Ok");
+                Program.SBO_Application.MessageBox("*****Beneficiary account details are verified successfully*****", 1, "Ok");
                 //chReceiver.Checked = true;
 
                 //verifying amount
-                Program.SBO_Application.StatusBar.SetText("Transaction Amount Verifying.....", SAPbouiCOM.BoMessageTime.bmt_Medium, SAPbouiCOM.BoStatusBarMessageType.smt_Success);
+                Program.SBO_Application.StatusBar.SetText("Verifying transaction amount.....", SAPbouiCOM.BoMessageTime.bmt_Medium, SAPbouiCOM.BoStatusBarMessageType.smt_Success);
                 //var chAmt = (SAPbouiCOM.CheckBox)outgoingPayment.Items.Item("chAmt").Specific;
 
                 bool isSameBank = _sender.BankCode == _receiver.BankCode;
@@ -249,7 +250,7 @@ namespace ConnectIPS.Integration.Forms.Users
                     return;
                 }
 
-                Program.SBO_Application.MessageBox("*****Transaction Amount is verified*****", 1, "Ok");
+                Program.SBO_Application.MessageBox("*****Transaction Amount is verified successfullyl*****", 1, "Ok");
                 //chAmt.Checked = true;
 
                 chValid.Checked = true;
