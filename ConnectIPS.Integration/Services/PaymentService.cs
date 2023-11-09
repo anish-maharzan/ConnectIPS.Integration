@@ -10,15 +10,6 @@ namespace ConnectIPS.Integration.Services
         public void AddIncomingPayment(IncomingPayment payment, out bool result, out string errMessage)
         {
             Payments incomingPayment = (Payments)B1Helper.DiCompany.GetBusinessObject(SAPbobsCOM.BoObjectTypes.oIncomingPayments);
-
-            incomingPayment.DocType = BoRcptTypes.rAccount;
-            incomingPayment.BPLID = 3;
-
-
-            //incomingPayment.CardCode = payment.CardCode;
-            incomingPayment.DocDate = DateTime.Now;
-            incomingPayment.DueDate = DateTime.Now;
-            //incomingPayment.CashSum = payment.PaymentAmount;
             incomingPayment.DocCurrency = payment.DocCurrency;
 
             incomingPayment.AccountPayments.AccountCode = "C31110001";
@@ -28,6 +19,9 @@ namespace ConnectIPS.Integration.Services
             incomingPayment.TransferAccount = "C31110002";
             //incomingPayment.TransferDate = DateTime.ParseExact(model.TransferDate, "yyyy-MM-dd", null);
 
+            incomingPayment.Invoices.DocEntry = payment.invoice.DocEntry;
+            incomingPayment.Invoices.InvoiceType = BoRcptInvTypes.it_Invoice;
+            incomingPayment.Invoices.SumApplied = payment.PaymentAmount;
 
 
             //incomingPayment.Invoices.DocEntry = payment.invoice.DocEntry;
