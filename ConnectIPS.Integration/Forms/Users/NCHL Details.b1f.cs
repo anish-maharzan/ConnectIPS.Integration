@@ -14,12 +14,6 @@ namespace ConnectIPS.Integration.Forms.Users
         {
         }
 
-        private BankAccount _sender { get; set; }
-        private BankAccount _receiver { get; set; }
-        private double _amount { get; set; }
-        private string _remarks { get; set; }
-        private string _transactionType { get; set; }
-
         public NCHL_Details(BankAccount sender, BankAccount receiver, double amount, string transactionType, string remarks, int type, int count)
         {
             _type = type;
@@ -32,28 +26,6 @@ namespace ConnectIPS.Integration.Forms.Users
             _transactionType = transactionType;
             LoadForm(sender, receiver, amount, remarks);
         }
-
-        private void LoadForm(BankAccount sender, BankAccount receiver, double amount, string remarks)
-        {
-            var realTimeService = new CIpsService();
-            var chargeAmount = realTimeService.GetChargeAmount(amount, sender.BankName == receiver.BankName);
-
-            tSendBank.Value = sender.BankName;
-            tSendAcct.Value = sender.AccountNo;
-            tSendAN.Value = sender.AccountName;
-            tTransDate.Value = DateTime.Now.ToString("yyyy-MM-dd hh:mm tt");
-            //tReference.Value = $"ACCOUNTFT:{sender.AccountName}";
-            tCredBank.Value = receiver.BankName;
-            tAcctName.Value = receiver.AccountName;
-            tBActNum.Value = receiver.AccountNo;
-            tBTranAmt.Value = amount.ToString();
-            tCharge.Value = chargeAmount.ToString();
-            tTotal.Value = (amount + chargeAmount).ToString();
-            tTransDet.Value = remarks;
-        }
-
-        private int _type;
-        private int _count;
 
         /// <summary>
         /// Initialize components. Called by framework after form created.
@@ -79,6 +51,7 @@ namespace ConnectIPS.Integration.Forms.Users
             this.StaticText10 = ((SAPbouiCOM.StaticText)(this.GetItem("Item_21").Specific));
             this.tTotal = ((SAPbouiCOM.EditText)(this.GetItem("tTotal").Specific));
             this.bVerify = ((SAPbouiCOM.Button)(this.GetItem("bVer").Specific));
+            this.bVerify.ClickBefore += new SAPbouiCOM._IButtonEvents_ClickBeforeEventHandler(this.bVerify_ClickBefore);
             this.bVerify.ClickAfter += new SAPbouiCOM._IButtonEvents_ClickAfterEventHandler(this.bVerify_ClickAfter);
             this.StaticText12 = ((SAPbouiCOM.StaticText)(this.GetItem("Item_30").Specific));
             this.StaticText13 = ((SAPbouiCOM.StaticText)(this.GetItem("Item_31").Specific));
@@ -87,8 +60,7 @@ namespace ConnectIPS.Integration.Forms.Users
             this.StaticText0 = ((SAPbouiCOM.StaticText)(this.GetItem("Item_0").Specific));
             this.StaticText1 = ((SAPbouiCOM.StaticText)(this.GetItem("Item_1").Specific));
             this.StaticText11 = ((SAPbouiCOM.StaticText)(this.GetItem("Item_2").Specific));
-            this.BtnOK = ((SAPbouiCOM.Button)(this.GetItem("bOK").Specific));
-            this.BtnOK.ClickAfter += new SAPbouiCOM._IButtonEvents_ClickAfterEventHandler(this.BtnOK_ClickAfter);
+            this.chVerify = ((SAPbouiCOM.CheckBox)(this.GetItem("chVerify").Specific));
             this.OnCustomInitialize();
 
         }
@@ -132,7 +104,51 @@ namespace ConnectIPS.Integration.Forms.Users
         private SAPbouiCOM.StaticText StaticText13;
         private SAPbouiCOM.StaticText StaticText14;
         private SAPbouiCOM.EditText tSendAN;
+        private SAPbouiCOM.StaticText StaticText0;
+        private SAPbouiCOM.StaticText StaticText1;
+        private SAPbouiCOM.StaticText StaticText11;
+        private SAPbouiCOM.CheckBox chVerify;
 
+        private BankAccount _sender { get; set; }
+        private BankAccount _receiver { get; set; }
+        private double _amount { get; set; }
+        private string _remarks { get; set; }
+        private string _transactionType { get; set; }
+        private int _type;
+        private int _count;
+
+
+        private void bVerify_ClickAfter(object sboObject, SAPbouiCOM.SBOItemEventArg pVal)
+        {
+            Verification();
+        }
+
+        private void bVerify_ClickBefore(object sboObject, SAPbouiCOM.SBOItemEventArg pVal, out bool BubbleEvent)
+        {
+            BubbleEvent = true;
+            if (bVerify.Caption == "OK")
+                UIAPIRawForm.Close();
+        }
+
+
+        private void LoadForm(BankAccount sender, BankAccount receiver, double amount, string remarks)
+        {
+            var realTimeService = new CIpsService();
+            var chargeAmount = realTimeService.GetChargeAmount(amount, sender.BankName == receiver.BankName);
+
+            tSendBank.Value = sender.BankName;
+            tSendAcct.Value = sender.AccountNo;
+            tSendAN.Value = sender.AccountName;
+            tTransDate.Value = DateTime.Now.ToString("yyyy-MM-dd hh:mm tt");
+            //tReference.Value = $"ACCOUNTFT:{sender.AccountName}";
+            tCredBank.Value = receiver.BankName;
+            tAcctName.Value = receiver.AccountName;
+            tBActNum.Value = receiver.AccountNo;
+            tBTranAmt.Value = amount.ToString();
+            tCharge.Value = chargeAmount.ToString();
+            tTotal.Value = (amount + chargeAmount).ToString();
+            tTransDet.Value = remarks;
+        }
         private void Verification()
         {
 
@@ -237,7 +253,11 @@ namespace ConnectIPS.Integration.Forms.Users
                 //chAmt.Checked = true;
 
                 chValid.Checked = true;
+                chVerify.Item.Enabled = true;
+                chVerify.Checked = true;
+                chVerify.Item.Enabled = false;
 
+                bVerify.Caption = "OK";
                 //bVerify.Item.Visible = false;
                 //BtnOK.Item.Visible = true;
                 ////UIAPIRawForm.Mode = SAPbouiCOM.BoFormMode.fm_OK_MODE;
@@ -245,28 +265,13 @@ namespace ConnectIPS.Integration.Forms.Users
                 //BtnOK.Item.Height = tTotal.Item.Top + 10;
 
                 Program.SBO_Application.StatusBar.SetText("NCHL details are verified", SAPbouiCOM.BoMessageTime.bmt_Medium, SAPbouiCOM.BoStatusBarMessageType.smt_Success);
-                UIAPIRawForm.Close();
+                //UIAPIRawForm.Close();
             }
             catch (Exception ex)
             {
                 chValid.Checked = false;
                 Program.SBO_Application.StatusBar.SetText("Error occurs due to: " + ex.Message, SAPbouiCOM.BoMessageTime.bmt_Medium, SAPbouiCOM.BoStatusBarMessageType.smt_Error);
             }
-        }
-
-        private void bVerify_ClickAfter(object sboObject, SAPbouiCOM.SBOItemEventArg pVal)
-        {
-            Verification();
-        }
-
-        private SAPbouiCOM.StaticText StaticText0;
-        private SAPbouiCOM.StaticText StaticText1;
-        private SAPbouiCOM.StaticText StaticText11;
-        private SAPbouiCOM.Button BtnOK;
-
-        private void BtnOK_ClickAfter(object sboObject, SAPbouiCOM.SBOItemEventArg pVal)
-        {
-            UIAPIRawForm.Close();
         }
     }
 }
