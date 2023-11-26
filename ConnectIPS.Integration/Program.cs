@@ -45,6 +45,7 @@ namespace ConnectIPS.Integration
                     AddonInfoInfo.InstallUDOs();
                 }
                 InitializeNCHL();
+                //PaymentService.AddIncomingPayment();
                 var applicationHandler = new ApplicationHandlers();
                 var addonName = "NCHL-NPI Integration";
                 Application.SBO_Application.StatusBar.SetSystemMessage($"{addonName} Add-on installed successfully.", SAPbouiCOM.BoMessageTime.bmt_Short, SAPbouiCOM.BoStatusBarMessageType.smt_Success);

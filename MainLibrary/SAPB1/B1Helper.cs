@@ -498,7 +498,7 @@ namespace MainLibrary.SAPB1
         /// <param name="addedToUDT">If this field will be added to system table or User defined table</param>
         /// <param name="valiedValue">The default selected value</param>
         /// <param name="validValues">Add the values seperated by comma "," for value and description ex:(Value,Description)</param>
-        public static void AddField(string name, string description, string tableName, SAPbobsCOM.BoFieldTypes fieldType, Nullable<int> size, SAPbobsCOM.BoYesNoEnum mandatory, SAPbobsCOM.BoFldSubTypes subType, bool addedToUDT, string validValue, string[,] LOV = null, string DefV = "", string linktoEntities = "", params string[] validValues)
+        public static void AddField(string name, string description, string tableName, SAPbobsCOM.BoFieldTypes fieldType, Nullable<int> size, SAPbobsCOM.BoYesNoEnum mandatory, SAPbobsCOM.BoFldSubTypes subType, bool addedToUDT, string validValue, string[,] LOV = null, string DefV = "", string linktoEntities = "", string linktoTable = "", params string[] validValues)
         {
 
             var objUserFieldMD = B1Helper.DiCompany.GetBusinessObject(SAPbobsCOM.BoObjectTypes.oUserFields) as SAPbobsCOM.UserFieldsMD;
@@ -555,6 +555,12 @@ namespace MainLibrary.SAPB1
                         //objUserFieldMD.LinkedTable = linktoEntities;
 
                     }
+
+                    if (linktoTable != "")
+                    {
+                        objUserFieldMD.LinkedTable = linktoTable;
+                    }
+
                     if (!string.IsNullOrEmpty(DefV))
                     {
                         objUserFieldMD.DefaultValue = DefV;
