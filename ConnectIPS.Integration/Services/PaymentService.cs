@@ -80,44 +80,57 @@ namespace ConnectIPS.Integration.Services
             }
         }
 
-        public static void AddIncomingPayment(IncomingPaymentParams obj)
+        public static bool AddIncomingPayment(IncomingPaymentParams obj, out int docNum, out string errMessage)
         {
-            Payments incomingPayment = (Payments)B1Helper.DiCompany.GetBusinessObject(SAPbobsCOM.BoObjectTypes.oIncomingPayments);
-
-            incomingPayment.DocType = BoRcptTypes.rAccount;
-            incomingPayment.BPLID = obj.Branch;
-
-
-            //incomingPayment.CardCode = payment.CardCode;
-            incomingPayment.DocDate = DateTime.Now;
-            incomingPayment.DueDate = DateTime.Now;
-            //incomingPayment.CashSum = payment.PaymentAmount;
-            //incomingPayment.DocCurrency = payment.DocCurrency;
-
-            incomingPayment.AccountPayments.AccountCode = obj.AccountCode;
-            incomingPayment.AccountPayments.SumPaid = obj.SumPaid;
-
-            incomingPayment.TransferAccount = obj.TransferAccount;
-            incomingPayment.TransferSum = obj.TransferSum;
-            //incomingPayment.TransferDate = DateTime.ParseExact(model.TransferDate, "yyyy-MM-dd", null);
-
-
-
-            //incomingPayment.Invoices.DocEntry = payment.invoice.DocEntry;
-            //incomingPayment.Invoices.InvoiceType = BoRcptInvTypes.it_Invoice;
-            //incomingPayment.Invoices.SumApplied = payment.PaymentAmount;
-
-            if (incomingPayment.Add() != 0)
+            try
             {
-                var result = false;
-                var errMessage = B1Helper.DiCompany.GetLastErrorDescription();
+                Payments incomingPayment = (Payments)B1Helper.DiCompany.GetBusinessObject(SAPbobsCOM.BoObjectTypes.oIncomingPayments);
+
+                incomingPayment.DocType = BoRcptTypes.rAccount;
+                incomingPayment.BPLID = obj.Branch;
+
+
+                //incomingPayment.CardCode = payment.CardCode;
+                incomingPayment.DocDate = DateTime.Now;
+                incomingPayment.DueDate = DateTime.Now;
+                //incomingPayment.CashSum = payment.PaymentAmount;
+                //incomingPayment.DocCurrency = payment.DocCurrency;
+
+                incomingPayment.AccountPayments.AccountCode = obj.AccountCode;
+                incomingPayment.AccountPayments.SumPaid = obj.SumPaid;
+
+                incomingPayment.TransferAccount = obj.TransferAccount;
+                incomingPayment.TransferSum = obj.TransferSum;
+                //incomingPayment.TransferDate = DateTime.ParseExact(model.TransferDate, "yyyy-MM-dd", null);
+
+
+                //incomingPayment.Invoices.DocEntry = payment.invoice.DocEntry;
+                //incomingPayment.Invoices.InvoiceType = BoRcptInvTypes.it_Invoice;
+                //incomingPayment.Invoices.SumApplied = payment.PaymentAmount;
+                if (incomingPayment.Add() != 0)
+                {
+                    docNum = 0;
+                    errMessage = B1Helper.DiCompany.GetLastErrorDescription();
+                    return false;
+                }
+                else
+                {
+                    var docEntry = B1Helper.DiCompany.GetNewObjectKey();
+                    string query = $@"SELECT ""DocNum"" FROM ORCT  WHERE ""DocEntry"" = {docEntry}";
+                    Recordset Rec = (Recordset)B1Helper.DiCompany.GetBusinessObject(BoObjectTypes.BoRecordset);
+                    Rec.DoQuery(query);
+                    docNum = Convert.ToInt32(Rec.Fields.Item(0).Value.ToString());
+                    errMessage = "";
+                    return true;
+                }
             }
-            else
+            catch (Exception ex)
             {
-                var docEntry = B1Helper.DiCompany.GetNewObjectKey();
-                var result = true;
-                var errMessage = "";
+                docNum = 0;
+                errMessage = ex.Message;
+                return false;
             }
+
         }
     }
 
@@ -128,5 +141,6 @@ namespace ConnectIPS.Integration.Services
         public double SumPaid { get; set; }
         public string TransferAccount { get; set; }
         public double TransferSum { get; set; }
+        public int BaseDocEntry { get; set; }
     }
 }
